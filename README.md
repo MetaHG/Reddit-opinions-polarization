@@ -32,7 +32,7 @@ Although the dataset is huge (350GB), we will focus on specific communities (sub
 
 Finally, we might use additional NLP databases based on the metrics used to analyze the text but this will be decided in the second Milestone.
 
-## Internal Milestone until Milestone 2
+## Internal Milestones until Milestone 2
 
 1. Study different metrics and find a suitable measure of divisiveness. These metrics can either be direct (e.g. reddit’s “controversial” score) or indirect (measuring vulgarity, lack of respect, etc…).
 2. Early results of sentiment analysis on reddit comments (NLP).
