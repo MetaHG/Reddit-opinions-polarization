@@ -32,7 +32,7 @@ Although the dataset is huge (350GB), we will focus on specific communities (sub
 
 Finally, we might use additional NLP databases based on the metrics used to analyze the text but this will be decided in the second Milestone.
 
-## A list of internal milestones up until project milestone 2
+## Internal Milestone until Milestone 2
 
 1. Study different metrics and find a suitable measure of divisiveness. These metrics can either be direct (e.g. reddit’s “controversial” score) or indirect (measuring vulgarity, lack of respect, etc…).
 2. Early results of sentiment analysis on reddit comments (NLP).
@@ -41,7 +41,7 @@ Finally, we might use additional NLP databases based on the metrics used to anal
 5. Create initial time series featuring the overall divisiveness over time.
 6. Rank subreddits & topics chosen according to their polarization.
 
-## Questions for TAa
+## Questions for TAs
 
 - For some metrics we want to use, we will have to do some natural language processing. Do you have any tips on how to proceed efficiently?
 - Did you understand what we meant by divisiveness/polarization of opinion through this milestone?
