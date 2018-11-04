@@ -4,7 +4,7 @@
 
 In the recent months following the 2016 American election, many media outlets have argued about an increase in social divisiveness and the polarization of political opinions. The intensification of political debates as well as a growing inability to find common grounds are seen as direct consequences of this divide.
 
-Many of these organization point at modern social media as a potential cause of this polarization. Their inherent filter bubbles and a promotion of extreme opinions create fertile ground for disrespectful debate, especially when it meets little consequence.
+Many of these organizations point at modern social media as a potential cause of this polarization. Their inherent filter bubbles and a promotion of extreme opinions create fertile ground for disrespectful debate, especially when it meets little consequence.
 
 Through an analysis of the wide range of political and social discussions available on Reddit, our goal is to measure and analyze how this polarization of opinions has evolved over time in order to confirm or disprove this hypothesis. After defining clear metrics for social divisiveness and controversy, we would like to compare them among the different communities of Reddit, as well as understand what topics are the most contentious.
 
@@ -30,7 +30,7 @@ Our main dataset will be the [Reddit dataset](http://academictorrents.com/detail
 
 Although the dataset is huge (350GB), we will focus on specific communities (subreddits) and topics in order to better assess divisiveness and its expression within a community.
 
-Finally, we might use additional NLP databases based on the metrics used to analyze the text but this will be decided in the second Milestone.
+Finally, we might use additional NLP databases based on the metrics used to analyze the text but this will be decided in the second milestone.
 
 ## Internal Milestones until Milestone 2
 
@@ -45,4 +45,4 @@ Finally, we might use additional NLP databases based on the metrics used to anal
 
 - For some metrics we want to use, we will have to do some natural language processing. Do you have any tips on how to proceed efficiently?
 - Did you understand what we meant by divisiveness/polarization of opinion through this milestone?
-- Is our bottom up approach (starting with a selection of specific topics and timeframe then work toward more general ideas and findings) a good start? Or would we benefit of trying to rather do a top-down approach (consider the whole reddit dataset and then work toward specific events)?
+- Is our bottom up approach (starting with a selection of specific topics and timeframe then work toward more general ideas and findings) a good start? Or would we rather benefit from a top-down approach (consider the whole reddit dataset and then work toward specific events)?
