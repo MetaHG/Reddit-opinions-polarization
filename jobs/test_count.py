@@ -7,7 +7,7 @@ spark.conf.set('spark.sql.session.timeZone', 'UTC')
 sc = spark.sparkContext
 
 # Import dependencies ZIP
-sc.addPyFile('jobs/src.zip')
+sc.addPyFile('src/load.py')
 
 # Import from dependencies
 from load import load_data
@@ -16,9 +16,6 @@ from load import load_data
 if __name__ == "__main__":
 
     # Load data
-    df = load_data(sc, [2015, 2016, 2017])
+    rdd = load_data(sc, [2005])
 
-    # Print first 10 elements
-    for x in df.take(10):
-        print(x)
-
+    print("The selected dataset has {} entries.".format(rdd.count()))
