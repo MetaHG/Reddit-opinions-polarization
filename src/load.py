@@ -60,8 +60,8 @@ def load_data(sc, filter=None, sample=True):
 
     # Create SQL context from SparkContext
     sqlContext = SQLContext(sc)
-    rdd = rdd.map(clean_data)
-    df = sqlContext.createDataFrame(rdd, schema).map(json.loads)
+    rdd = rdd.map(json.loads).map(clean_data)
+    df = sqlContext.createDataFrame(rdd, schema)
 
     return df
 
