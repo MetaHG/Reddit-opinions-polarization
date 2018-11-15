@@ -16,7 +16,7 @@ from load import load_data
 if __name__ == "__main__":
 
     # Load data
-    df = load_data(sc, sample=True)
+    rdd, df = load_data(sc, sample=0.005)
 
     # Show first 50 elements
     df.limit(50).show()

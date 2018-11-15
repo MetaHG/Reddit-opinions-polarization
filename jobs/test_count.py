@@ -16,6 +16,6 @@ from load import load_data
 if __name__ == "__main__":
 
     # Load data
-    rdd = load_data(sc, [2005])
+    rdd, df = load_data(sc, [2005])
 
-    print("The selected dataset has {} entries.".format(rdd.count()))
+    print("The selected dataset has {} entries.".format(df.count()))
