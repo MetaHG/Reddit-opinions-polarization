@@ -12,7 +12,7 @@ def clean_data(x):
 
     return x
 
-def load_data(sc, filter=None, sample=True):
+def load_data(sc, filter=None, sample=None):
 
     if filter is None:
 
@@ -34,8 +34,8 @@ def load_data(sc, filter=None, sample=True):
 
         raise NotImplementedError("filter must be either an array, a dictionary or None.")
 
-    if sample:
-        rdd = rdd.sample(False, 0.005, 0)
+    if sample is not None:
+        rdd = rdd.sample(False, sample, 0)
 
     schema = StructType([
         StructField("distinguished",    StringType(),   True),
@@ -63,6 +63,6 @@ def load_data(sc, filter=None, sample=True):
     rdd = rdd.map(json.loads).map(clean_data)
     df = sqlContext.createDataFrame(rdd, schema)
 
-    return df
+    return rdd, df
 
 
