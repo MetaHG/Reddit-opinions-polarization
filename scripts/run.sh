@@ -1,0 +1,1 @@
+spark-submit --master yarn --deploy-mode $1 --driver-memory 4G --num-executors 5 --executor-memory 4G --executor-cores 5 $2
