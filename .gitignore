@@ -12,9 +12,8 @@ build/
 develop-eggs/
 dist/
 downloads/
-eggs/
-.eggs/
 lib/
+.eggs/
 lib64/
 parts/
 sdist/
@@ -22,7 +21,6 @@ var/
 wheels/
 *.egg-info/
 .installed.cfg
-*.egg
 MANIFEST
 
 # PyInstaller
@@ -105,3 +103,4 @@ venv.bak/
 .idea/*
 .ssh-config
 data/*
+archives/
