@@ -34,11 +34,7 @@ spark.conf.set('spark.sql.session.timeZone', 'UTC')
 sc = spark.sparkContext
 
 # Import dependencies ZIP
-sc.addPyFile('src/load.py')
-
-# Import from dependencies
-from load import load_data
-
+execfile("./__pyfiles__/load.py")
 
 # # Load and preprocess sample data
 _, messages = load_data(sc)
@@ -121,6 +117,7 @@ spark.udf.register('process_body', process_body, ArrayType(ArrayType(StringType(
 ###
 
 def compute_nltk_polarity(msg_body):
+    nltk.data.path.append("./nltk_data.zip/nltk_data");
     sid = SentimentIntensityAnalyzer()
     msg_body = sid.polarity_scores(msg_body)
     return msg_body
@@ -254,4 +251,3 @@ hw_ref_scores = hw_ref_scores.toDF('id', 'hate_ref_intensity', 'nb_hw_ref_matche
 
 # Save to parquet
 hw_ref_scores.write.mode('overwrite').parquet('hate_speech_refined_scores_parquet')
-
