@@ -15,6 +15,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import TweetTokenizer
 
 # Language processing with TextBlob
 from textblob import TextBlob
@@ -75,35 +76,42 @@ def process_body(body, n_grams=1, left_pad_symbol=None, right_pad_symbol=None, l
         rdd of the form (parent_id, id, processed_msg_body)
     """
     
-    tokens = nltk.word_tokenize(body)
-
-    if stop_words is not None:
-        if remove_stop_words:
-            tokens = [token for token in tokens if token not in stop_words]
-
-    if lemmatizer is not None:
-        if remove_stop_words or stop_words is None:
-            tokens = [lemmatizer.lemmatize(token) for token in tokens]
-        elif not lemmatize_stop_words:
-                tokens = [lemmatizer.lemmatize(token) if token not in stop_words else token for token in tokens]
-
-    if stemmer is not None:
-        if remove_stop_words or stop_words is None:
-            tokens = [stemmer.stem(token) for token in tokens]
-        elif not stem_stop_words:
-                tokens = [stemmer.stem(token) if token not in stop_words else token for token in tokens]
-
     if n_grams < 1:
         raise ValueError("n_grams should be bigger than 1")
+    
+    tknzr = TweetTokenizer()
+    tokens = tknzr.tokenize(body)
+    
+    if stop_words is None:
+        stop_words = []
+    if lemmatizer is not None and stemmer is not None:
+        if remove_stop_words:
+            tokens = [lemmatizer.lemmatize(stemmer.stem(token)) for token in tokens if token not in stop_words]
+        elif not lemmatize_stop_words and not stem_stop_words:
+            tokens = [lemmatizer.lemmatize(stemmer.stem(token)) if token not in stop_words else token for token in tokens]
+        elif not lemmatize_stop_words:
+            tokens = [lemmatizer.lemmatize(stemmer.stem(token)) if token not in stop_words else stemmer.stem(token) for token in tokens]
+        elif not stem_stop_words:
+            tokens = [lemmatizer.lemmatize(stemmer.stem(token)) if token not in stop_words else lemmatizer.lemmatize(token) for token in tokens]
+    elif lemmatizer is not None:
+        if remove_stop_words:
+            tokens = [lemmatizer.lemmatize(token) for token in tokens if token not in stop_words]
+        elif not lemmatize_stop_words:
+            tokens = [lemmatizer.lemmatize(token) if token not in stop_words else token for token in tokens]
+    elif stemmer is not None:
+        if remove_stop_words:
+            tokens = [stemmer.stem(token) for token in tokens if token not in stop_words]
+        elif not stem_stop_words is not None:
+            token = [stemmer.stem(token) if token not in stop_words else token for token in tokens]
+
+    if left_pad_symbol is not None and right_pad_symbol is not None:
+        tokens = list(nltk.ngrams(tokens, n_grams, True, True, left_pad_symbol, right_pad_symbol))
+    elif left_pad_symbol is not None:
+        tokens = list(nltk.ngrams(tokens, n_grams, pad_left=True, left_pad_symbol=left_pad_symbol))
+    elif right_pad_symbol is not None:
+        tokens = list(nltk.ngrams(tokens, n_grams, pad_right=True, right_pad_symbol=right_pad_symbol))
     else:
-        if left_pad_symbol is not None and right_pad_symbol is not None:
-            tokens = list(nltk.ngrams(tokens, n_grams, True, True, left_pad_symbol, right_pad_symbol))
-        elif left_pad_symbol is not None:
-            tokens = list(nltk.ngrams(tokens, n_grams, pad_left=True, left_pad_symbol=left_pad_symbol))
-        elif right_pad_symbol is not None:
-            tokens = list(nltk.ngrams(tokens, n_grams, pad_right=True, right_pad_symbol=right_pad_symbol))
-        else:
-            tokens = list(nltk.ngrams(tokens, n_grams))
+        tokens = list(nltk.ngrams(tokens, n_grams))
 
     return [list(token) for token in tokens]
 
@@ -117,7 +125,7 @@ spark.udf.register('process_body', process_body, ArrayType(ArrayType(StringType(
 ###
 
 def compute_nltk_polarity(msg_body):
-    nltk.data.path.append("./nltk_data.zip/nltk_data");
+    nltk.data.path.append("./nltk_data.zip/nltk_data")
     sid = SentimentIntensityAnalyzer()
     msg_body = sid.polarity_scores(msg_body)
     return msg_body
@@ -204,7 +212,7 @@ def count_matches(msg_grams, ref_grams, ref_grams_intensity=None):
         return {'count':count, 'intensity':intensity}
     
 def df_count_matches(gram_list):
-    return func.udf(lambda c: count_matches(c, gram_list), IntegerType())
+    return func.udf(lambda c: count_matches(c, gram_list), FloatType())
 
 def df_count_matches_intensity(gram_list, intensity_list):
     return func.udf(lambda c: count_matches(c, gram_list, intensity_list), MapType(StringType(), FloatType()))
