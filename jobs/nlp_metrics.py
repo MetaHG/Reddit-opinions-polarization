@@ -4,17 +4,6 @@
 ###
 ### Imports
 ###
-import pandas as pd
-import numpy as np
-import scipy as sp
-import seaborn as sns
-import matplotlib
-import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
-
-import findspark
-findspark.init()
-
 import pyspark
 from pyspark.sql import *
 import pyspark.sql.functions as func
@@ -31,6 +20,7 @@ from nltk.stem import WordNetLemmatizer
 from textblob import TextBlob
 from textblob.sentiments import NaiveBayesAnalyzer
 
+# Standard library
 from collections import Counter
 
 ###
@@ -40,10 +30,18 @@ from collections import Counter
 
 # Create spark session
 spark = SparkSession.builder.getOrCreate()
+spark.conf.set('spark.sql.session.timeZone', 'UTC')
 sc = spark.sparkContext
 
+# Import dependencies ZIP
+sc.addPyFile('src/load.py')
+
+# Import from dependencies
+from load import load_data
+
+
 # # Load and preprocess sample data
-messages = spark.read.load('../sample_parquet/first_1000/')
+_, messages = load_data(sc)
 
 # Prepare stopwords, stemmer and lemmatizer for messages preprocessing.
 en_stopwords = stopwords.words('english')
