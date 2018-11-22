@@ -27,6 +27,8 @@ if __name__ == "__main__":
 
     _, df = load_data(sc, filter=[2016])
 
+    df = df.withColumn('created', func.from_unixtime(df['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType()))
+
     comments = df.select('link_id','body','created', 'subreddit')
 
     oct_2016_news_comments = comments.filter(comments.created > start_date).filter(comments.created < end_date).filter(comments.subreddit == 'news')
