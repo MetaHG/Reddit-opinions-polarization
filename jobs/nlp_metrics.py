@@ -138,7 +138,7 @@ sent_nltk_scores = sent_bodies.select('id', 'scores.neg', 'scores.neu', 'scores.
 sent_nltk_scores = sent_nltk_scores.toDF('id', 'nltk_negativity', 'nltk_neutrality', 'nltk_positivity')
 
 # Save to parquet
-sent_nltk_scores.write.mode('overwrite').parquet('sent_nltk_scores_parquet')
+#sent_nltk_scores.write.mode('overwrite').parquet('sent_nltk_scores_parquet')
 
 ###
 ### Sentence polarity using TextBlob
@@ -157,7 +157,7 @@ sent_blob_scores = sent_blob_bodies.select('id', 'scores.polarity', 'scores.subj
 sent_blob_scores = sent_blob_scores.toDF('id', 'text_blob_polarity', 'text_blob_subjectivity')
 
 # Save to parquet
-sent_blob_scores.write.mode('overwrite').parquet('sent_blob_scores_parquet')
+#sent_blob_scores.write.mode('overwrite').parquet('sent_blob_scores_parquet')
 
 
 # Using twitter trained positive/negative naive bayes classifier
@@ -228,7 +228,7 @@ bw_1_grams = [i.en_bad_words for i in bw_gram_rank.filter('gram_rank == 1').sele
 bw_counter = tokens.withColumn("tokens", df_count_matches(bw_1_grams)(func.col("tokens"))).withColumnRenamed('tokens', 'nb_bw_matches')
 
 # Save to parquet
-bw_counter.write.mode('overwrite').parquet('vulgarity_scores_parquet')
+#bw_counter.write.mode('overwrite').parquet('vulgarity_scores_parquet')
 
 
 # Hate speech
@@ -242,7 +242,7 @@ hw_1_grams = [i.hate_words for i in hw_gram_rank.filter('gram_rank == 1').select
 hw_counter = tokens.withColumn("tokens", df_count_matches(hw_1_grams)(func.col("tokens"))).withColumnRenamed('tokens', 'nb_hw_matches')
 
 # Save to parquet
-hw_counter.write.mode('overwrite').parquet('hate_speech_scores_parquet')
+#hw_counter.write.mode('overwrite').parquet('hate_speech_scores_parquet')
 
 
 ## Refined hate words
@@ -258,4 +258,9 @@ hw_ref_scores = hw_ref_counter.select('id', 'nb_hw_ref_matches.intensity', 'nb_h
 hw_ref_scores = hw_ref_scores.toDF('id', 'hate_ref_intensity', 'nb_hw_ref_matches')
 
 # Save to parquet
-hw_ref_scores.write.mode('overwrite').parquet('hate_speech_refined_scores_parquet')
+#hw_ref_scores.write.mode('overwrite').parquet('hate_speech_refined_scores_parquet')
+nlp_metrics_df = (sent_nltk_scores
+    .join(sent_blob_scores, on='id')
+    .join(bw_counter, on='id')
+    .join(hw_counter, on='id')
+    .join(hw_ref_scores, on='id'))
