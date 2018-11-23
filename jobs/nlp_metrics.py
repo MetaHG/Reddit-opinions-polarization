@@ -102,7 +102,9 @@ def process_body(body, n_grams=1, left_pad_symbol=None, right_pad_symbol=None, l
         if remove_stop_words:
             tokens = [stemmer.stem(token) for token in tokens if token not in stop_words]
         elif not stem_stop_words is not None:
-            token = [stemmer.stem(token) if token not in stop_words else token for token in tokens]
+            tokens = [stemmer.stem(token) if token not in stop_words else token for token in tokens]
+    elif stemmer is not None and lemmatizer is not None:
+            tokens = [token for token in tokens if token not in stop_words]
 
     if left_pad_symbol is not None and right_pad_symbol is not None:
         tokens = list(nltk.ngrams(tokens, n_grams, True, True, left_pad_symbol, right_pad_symbol))
@@ -133,9 +135,9 @@ def compute_nltk_polarity(msg_body):
 compute_nltk_polarity_udf = func.udf(compute_nltk_polarity, MapType(StringType(), FloatType(), False))
 spark.udf.register('compute_nltk_polarity', compute_nltk_polarity_udf)
 
-sent_bodies = cleaned_messages.selectExpr('id', "compute_nltk_polarity(body) as scores")
-sent_nltk_scores = sent_bodies.select('id', 'scores.neg', 'scores.neu', 'scores.pos')
-sent_nltk_scores = sent_nltk_scores.toDF('id', 'nltk_negativity', 'nltk_neutrality', 'nltk_positivity')
+sent_bodies = cleaned_messages.selectExpr('id', 'created_utc', "compute_nltk_polarity(body) as scores")
+sent_nltk_scores = sent_bodies.select('id', 'created_utc', 'scores.neg', 'scores.neu', 'scores.pos')
+sent_nltk_scores = sent_nltk_scores.toDF('id', 'created_utc', 'nltk_negativity', 'nltk_neutrality', 'nltk_positivity')
 
 # Save to parquet
 #sent_nltk_scores.write.mode('overwrite').parquet('sent_nltk_scores_parquet')
@@ -152,9 +154,9 @@ def compute_blob_polarity(msg_body):
 compute_blob_polarity_udf = func.udf(compute_blob_polarity, MapType(StringType(), FloatType(), False))
 spark.udf.register('compute_blob_polarity', compute_blob_polarity_udf)
 
-sent_blob_bodies = cleaned_messages.selectExpr('id', "compute_blob_polarity(body) as scores")
-sent_blob_scores = sent_blob_bodies.select('id', 'scores.polarity', 'scores.subjectivity')
-sent_blob_scores = sent_blob_scores.toDF('id', 'text_blob_polarity', 'text_blob_subjectivity')
+sent_blob_bodies = cleaned_messages.selectExpr('id', 'created_utc', "compute_blob_polarity(body) as scores")
+sent_blob_scores = sent_blob_bodies.select('id', 'created_utc', 'scores.polarity', 'scores.subjectivity')
+sent_blob_scores = sent_blob_scores.toDF('id', 'created_utc', 'text_blob_polarity', 'text_blob_subjectivity')
 
 # Save to parquet
 #sent_blob_scores.write.mode('overwrite').parquet('sent_blob_scores_parquet')
@@ -168,8 +170,8 @@ def compute_blob_class_polarity(msg_body):
 compute_blob_class_polarity_udf = func.udf(compute_blob_class_polarity, MapType(StringType(), FloatType(), False))
 spark.udf.register('compute_blob_class_polarity', compute_blob_class_polarity_udf)
 
-sent_blob_class_bodies = cleaned_messages.selectExpr('id', "compute_blob_class_polarity(body) as scores")
-sent_blob_class_scores = sent_blob_class_bodies.select('id', 'scores.classification', 'scores.p_pos', 'scores.p_neg')
+sent_blob_class_bodies = cleaned_messages.selectExpr('id', 'created_utc', "compute_blob_class_polarity(body) as scores")
+sent_blob_class_scores = sent_blob_class_bodies.select('id', 'created_utc', 'scores.classification', 'scores.p_pos', 'scores.p_neg')
 
 # This does not finish, classifier takes too long
 # sent_blob_class_scores.show()
@@ -180,7 +182,7 @@ sent_blob_class_scores = sent_blob_class_bodies.select('id', 'scores.classificat
 ###
 
 # Process tokens
-tokens = cleaned_messages.selectExpr('id', 'process_body(body) as tokens')
+tokens = cleaned_messages.selectExpr('id', 'created_utc', 'process_body(body) as tokens')
 
 # Define helper functions
 def count_matches(msg_grams, ref_grams, ref_grams_intensity=None):
@@ -254,13 +256,85 @@ hw_ref_1_grams = [i.hate_words_ref for i in hw_ref_gram_rank.filter('gram_rank =
 hw_ref_1_intensity = [i.intensity for i in hw_ref_gram_rank.filter('gram_rank == 1').select('intensity').collect()]
 
 hw_ref_counter = tokens.withColumn("tokens", df_count_matches_intensity(hw_ref_1_grams, hw_ref_1_intensity)(func.col("tokens"))).withColumnRenamed('tokens', 'nb_hw_ref_matches')
-hw_ref_scores = hw_ref_counter.select('id', 'nb_hw_ref_matches.intensity', 'nb_hw_ref_matches.count')
-hw_ref_scores = hw_ref_scores.toDF('id', 'hate_ref_intensity', 'nb_hw_ref_matches')
+hw_ref_scores = hw_ref_counter.select('id', 'created_utc', 'nb_hw_ref_matches.intensity', 'nb_hw_ref_matches.count')
+hw_ref_scores = hw_ref_scores.toDF('id', 'created_utc', 'hate_ref_intensity', 'nb_hw_ref_matches')
 
 # Save to parquet
 #hw_ref_scores.write.mode('overwrite').parquet('hate_speech_refined_scores_parquet')
 nlp_metrics_df = (sent_nltk_scores
-    .join(sent_blob_scores, on='id')
-    .join(bw_counter, on='id')
-    .join(hw_counter, on='id')
-    .join(hw_ref_scores, on='id'))
+    .join(sent_blob_scores, on=['id', 'created_utc'])
+    .join(bw_counter, on=['id', 'created_utc'])
+    .join(hw_counter, on=['id', 'created_utc'])
+    .join(hw_ref_scores, on=['id', 'created_utc']))
+
+nlp_metrics_df = nlp_metrics_df.withColumn('created_utc', func.from_unixtime(nlp_metrics_df['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType())) \
+                                .withColumnRenamed('created_utc', 'creation_date')
+
+nlp_metrics_df.registerTempTable("nlp_metrics")
+
+daily_nlp_metrics = spark.sql("""
+SELECT
+    creation_date,
+    
+    AVG(sum_nltk_negativity) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS nltk_negativity_60d_avg,
+    
+    AVG(sum_nltk_neutrality) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS nltk_neutrality_60d_avg,
+    
+    AVG(sum_nltk_positivity) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS nltk_positivity_60d_avg,
+    
+    AVG(sum_text_blob_polarity) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS text_blob_polarity_60d_avg,
+    
+    AVG(sum_text_blob_subjectivity) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS text_blob_subjectivity_60d_avg,
+    
+    AVG(sum_nb_bw_matches) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS nb_bw_matches_60d_avg,
+    
+    AVG(sum_nb_hw_matches) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS nb_hw_matches_60d_avg,
+    
+    AVG(sum_hate_ref_intensity) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS hate_ref_intensity_60d_avg,
+    
+    AVG(sum_nb_hw_ref_matches) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS nb_hw_ref_matches_60d_avg
+    
+FROM (
+    SELECT
+        creation_date,
+        SUM(nltk_negativity) AS sum_nltk_negativity,
+        SUM(nltk_neutrality) AS sum_nltk_neutrality,
+        SUM(nltk_positivity) AS sum_nltk_positivity,
+        SUM(text_blob_polarity) AS sum_text_blob_polarity,
+        SUM(text_blob_subjectivity) AS sum_text_blob_subjectivity, 
+        SUM(nb_bw_matches) AS sum_nb_bw_matches,
+        SUM(nb_hw_matches) AS sum_nb_hw_matches,
+        SUM(hate_ref_intensity) AS sum_hate_ref_intensity,
+        SUM(nb_hw_ref_matches) AS sum_nb_hw_ref_matches
+    FROM nlp_metrics
+    GROUP BY creation_date
+    ORDER BY creation_date
+)
+""")
