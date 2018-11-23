@@ -338,3 +338,5 @@ FROM (
     ORDER BY creation_date
 )
 """)
+
+daily_nlp_metrics.write.mode('overwrite').parquet('daily_nlp_metrics.parquet')
