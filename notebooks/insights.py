@@ -55,3 +55,12 @@ def insights_comments_levels(metrics):
         metrics['count_low'][0] / metrics['count_of_comments'][0] * 100,
         "[MISSING: max_depth]"
     ))
+
+def insights_score(metrics):
+
+    printmd(
+    "> The highest score of all the dataset is **{:,}** and the lowest score is **{:,}**."
+    "".format(
+        metrics.index.max(),
+        metrics.index.min()
+    ))
