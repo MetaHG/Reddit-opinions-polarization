@@ -31,6 +31,6 @@ if __name__ == "__main__":
 
     comments = df.select('link_id','body','created', 'subreddit')
 
-    oct_2016_news_comments = comments.filter(comments.created > start_date).filter(comments.created < end_date).filter(comments.subreddit == 'news')
+    oct_2016_news_comments = comments.filter(comments.created > start_date).filter(comments.created < end_date).filter(comments.subreddit == 'news').select('link_id','body','created')
 
     oct_2016_news_comments.write.mode('overwrite').parquet('oct_2016_news_comment.parquet')

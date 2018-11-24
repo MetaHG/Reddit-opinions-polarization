@@ -5,10 +5,27 @@ import csv
 import requests
 import os
 import pandas as pd
-
+import praw
+from praw.models import Submission
 
 RM_URL = 'http://redditmetrics.com/top/offset/%d'
 data_file = '../data/reddit_metrics_sr_ranking.csv'
+
+def get_reddit_instance(cred_filename):
+	lines = []
+	with open(cred_filename, 'r') as f:
+		lines = '\n'.split(f.read())
+	return praw.Reddit(client_id=lines[0], client_secret=lines[1], user_agent=lines[2])
+
+def retrieve_post_content(reddit_instance, post_id):
+    if post_id[2] == '_':
+        #the type identifier of the content has not been removed
+        post_id = post_id[3:]
+        
+    post = Submission(reddit_instance, post_id)
+    #the title is concatenated to the potential post content.
+    return {'title': post.title, 'post_content':post.selftext}
+
 
 #parse the html tab elements of the ranking.
 def get_ranking_table(url, offset):
