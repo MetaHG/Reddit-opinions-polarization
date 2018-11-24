@@ -221,7 +221,7 @@ def df_count_matches_intensity(gram_list, intensity_list):
 
 
 ### Vulgarity
-bad_words = spark.read.csv('../bad_words_lexicon/en.csv', header=True)
+bad_words = spark.read.csv('./lexicons.zip/lexicons/bad_words_lexicon/en.csv', header=True)
 bw_gram_rank = bad_words.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('en_bad_words')))
 bw_gram_rank.show()
 
@@ -235,7 +235,7 @@ bw_counter = tokens.withColumn("tokens", df_count_matches(bw_1_grams)(func.col("
 
 # Hate speech
 ## Raw hate words (basic)
-hate_words = spark.read.csv('../hatespeech_lexicon/hatebase_dict.csv', header=True)
+hate_words = spark.read.csv('./lexicons.zip/lexicons/hatespeech_lexicon/hatebase_dict.csv', header=True)
 hate_words = hate_words.withColumnRenamed("uncivilised',", 'hate_words')                         .withColumn('hate_words', func.udf(lambda d: d[1:-2])(func.col('hate_words')))
 hw_gram_rank = hate_words.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('hate_words')))
 
@@ -249,7 +249,7 @@ hw_counter = tokens.withColumn("tokens", df_count_matches(hw_1_grams)(func.col("
 
 ## Refined hate words
 hw_ref_schema = StructType([StructField('hate_words_ref', StringType(), False), StructField('intensity', FloatType(), False)])
-hate_words_ref = spark.read.csv('../hatespeech_lexicon/refined_ngram_dict.csv', header=True, schema=hw_ref_schema)
+hate_words_ref = spark.read.csv('./lexicons.zip/lexicons/hatespeech_lexicon/refined_ngram_dict.csv', header=True, schema=hw_ref_schema)
 hw_ref_gram_rank = hate_words_ref.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('hate_words_ref')))
 
 hw_ref_1_grams = [i.hate_words_ref for i in hw_ref_gram_rank.filter('gram_rank == 1').select('hate_words_ref').collect()]
