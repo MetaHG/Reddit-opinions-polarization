@@ -6,7 +6,6 @@ spark = SparkSession.builder.getOrCreate()
 spark.conf.set('spark.sql.session.timeZone', 'UTC')
 sc = spark.sparkContext
 
-import spacy
 import gensim
 from spacy.lang.en import English
 import nltk
@@ -18,30 +17,6 @@ en_stop = set(nltk.corpus.stopwords.words('english'))
 parser = English()
 
 def lda_on_posts(dataset, words_per_topic, n_topics, parser=English(), stop_words=en_stop):
-    '''   
-    This function performs a LDA (Latent Dirichlet Allocation) model on a set of reddit comments.
-    Useful for topic modelling/extraction from a reddit post.
-    Parameters
-    −−−−−−−−−−
-    dataset: pyspark RDD or Dataframe, schema should have only three data type : 
-              the post id (link_id), the body of the comment and the creation date in this order.
-              
-    words_per_topic: number of words that should constitute a topic per post.
-    
-    n_topics: number of topics to extract by post
-    
-    parser: the natural language parser used, corresponds to a language normally,
-            by default english (as it is the most used language on reddit).
-            should be a parser from the spacy.lang library.
-    
-    stop_words: set of words that constitutes stop words (i.e. that should be
-                removed from the tokens)
-
-    Returns
-    −−−−−−−
-    A RDD with the following pair of data as rows : (<post_id>, <topic (as a list of words)>)) 
-    '''
-    #useful functions for preprocessing the data for LDA
     def tokenize(text):
         lda_tokens = []
         tokens = parser(text)
@@ -88,8 +63,6 @@ def lda_on_posts(dataset, words_per_topic, n_topics, parser=English(), stop_word
         dataset = dataset.rdd
     elif not isinstance(dataset, pyspark.rdd.RDD):
         raise ValueError('Wrong type of dataset, must be either a pyspark RDD or pyspark DataFrame')
-    
-    #TODO : keep the minimum timestamp (r[2] of the dataset) during computations.
     
     #filtering comments that were removed, to avoid them to pollute the topics extracted
     filter_absent_comm = dataset.filter(lambda r: r[1] != '[removed]' and r[1] != '[deleted]')
