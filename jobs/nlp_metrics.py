@@ -243,6 +243,7 @@ nlp_metrics_df = nlp_metrics_df.withColumn('created_utc', func.from_unixtime(nlp
 
 nlp_metrics_df.registerTempTable("nlp_metrics")
 
+# Compute daily average metrics
 daily_nlp_metrics = spark.sql("""
 SELECT
     creation_date,
