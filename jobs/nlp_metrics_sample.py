@@ -39,7 +39,7 @@ sc = spark.sparkContext
 execfile("./__pyfiles__/load.py")
 
 # # Load and preprocess sample data
-_, messages = load_data(sc, filter=[2016])
+messages = spark.read.load('sample.parquet')
 
 # Prepare stopwords, stemmer and lemmatizer for messages preprocessing.
 en_stopwords = stopwords.words('english')
@@ -214,7 +214,7 @@ bw_1_grams = [i.en_bad_words for i in bw_gram_rank.filter('gram_rank == 1').sele
 # Hate speech
 ## Raw hate words (basic)
 hate_words = spark.read.csv('lexicons/hatespeech_lexicon/hatebase_dict.csv', header=True)
-hate_words = hate_words.withColumnRenamed("uncivilised',", 'hate_words')                         .withColumn('hate_words', func.udf(lambda d: d[1:-2])(func.col('hate_words')))
+hate_words = hate_words.withColumnRenamed("uncivilised',", 'hate_words').withColumn('hate_words', func.udf(lambda d: d[1:-2])(func.col('hate_words')))
 hw_gram_rank = hate_words.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('hate_words')))
 
 hw_1_grams = [i.hate_words for i in hw_gram_rank.filter('gram_rank == 1').select('hate_words').collect()]
@@ -243,73 +243,60 @@ nlp_metrics_df = nlp_metrics_df.withColumn('created_utc', func.from_unixtime(nlp
 
 nlp_metrics_df.registerTempTable("nlp_metrics")
 
-# Compute daily average metrics
-daily_nlp_metrics = spark.sql("""
-SELECT
-    creation_date,
-    
-    AVG(sum_nltk_negativity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nltk_negativity_60d_avg,
-    
-    AVG(sum_nltk_neutrality) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nltk_neutrality_60d_avg,
-    
-    AVG(sum_nltk_positivity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nltk_positivity_60d_avg,
-    
-    AVG(sum_text_blob_polarity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS text_blob_polarity_60d_avg,
-    
-    AVG(sum_text_blob_subjectivity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS text_blob_subjectivity_60d_avg,
-    
-    AVG(sum_nb_bw_matches) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nb_bw_matches_60d_avg,
-    
-    AVG(sum_nb_hw_matches) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nb_hw_matches_60d_avg,
-    
-    AVG(sum_hw_ref_intensity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS hw_ref_intensity_60d_avg,
-    
-    AVG(sum_nb_hw_ref_matches) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nb_hw_ref_matches_60d_avg
-    
-FROM (
-    SELECT
-        creation_date,
-        SUM(nltk_negativity) AS sum_nltk_negativity,
-        SUM(nltk_neutrality) AS sum_nltk_neutrality,
-        SUM(nltk_positivity) AS sum_nltk_positivity,
-        SUM(text_blob_polarity) AS sum_text_blob_polarity,
-        SUM(text_blob_subjectivity) AS sum_text_blob_subjectivity, 
-        SUM(nb_bw_matches) AS sum_nb_bw_matches,
-        SUM(nb_hw_matches) AS sum_nb_hw_matches,
-        SUM(hw_ref_intensity) AS sum_hw_ref_intensity,
-        SUM(nb_hw_ref_matches) AS sum_nb_hw_ref_matches
-    FROM nlp_metrics
-    GROUP BY creation_date
-    ORDER BY creation_date
-)
-""")
 
-daily_nlp_metrics.write.mode('overwrite').parquet('daily_nlp_metrics.parquet')
-#daily_nlp_metrics.write.csv('daily_nlp_metrics.tsv', mode='overwrite', compression='gzip', sep='\t', header=True, timestampFormat='yyyy-MM-dd HH:mm:ss.SS')
+###
+### Dataset analysis
+###
+
+# Messages date range
+date_extrema = spark.sql("""
+SELECT MIN(creation_date), MAX(creation_date)
+FROM nlp_metrics
+""").collect()
+min_date = date_extrema[0][0]
+max_date = date_extrema[0][1]
+
+print("The dataset starts on the {} and ends on the {}.".format(min_date, max_date))
+
+
+# Messages count
+total_messages = spark.sql("""
+SELECT COUNT(*)
+FROM nlp_metrics
+""").collect()
+
+tot_msg = total_messages[0][0]
+
+print("The dataset contains {} messages".format(tot_msg))
+
+
+# Lack of respect metrics
+total_no_respect = spark.sql("""
+SELECT SUM(nb_bw_matches), SUM(nb_hw_matches), SUM(nb_hw_ref_matches)
+FROM nlp_metrics
+""").collect()
+
+sum_bw = total_no_respect[0][0]
+sum_hw = total_no_respect[0][1]
+sum_ref_hw = total_no_respect[0][2]
+
+print("Over all the messages, there are at least {} bad words, {} hate speech words, {} refined hate speech words".format(sum_bw, sum_hw, sum_ref_hw))
+
+
+# Polarity metrics
+total_polarity = spark.sql("""
+SELECT SUM(nltk_negativity), SUM(nltk_neutrality), SUM(nltk_positivity), SUM(text_blob_polarity), SUM(text_blob_subjectivity)
+FROM nlp_metrics
+""").collect()
+
+sum_nltk_neg = total_polarity[0][0]
+sum_nltk_neu = total_polarity[0][1]
+sum_nltk_pos = total_polarity[0][2]
+sum_txt_blob_pol = total_polarity[0][3]
+sum_txt_blob_subj = total_polarity[0][4]
+
+print("The total pos/neu/neg score of the dataset is: negativity: {}, neutrality:{}, positivity: {}".format(sum_nltk_neg, sum_nltk_neu, sum_nltk_pos))
+print("The total polarity and subjectivity score of the dataset is: polarity: {}, subjectivity: {}".format(sum_txt_blob_pol, sum_txt_blob_subj))
+
+print("The total pos/neu/neg proportion (%) of the dataset is: negativity: {}, neutrality:{}, positivity: {}".format(sum_nltk_neg/tot_msg, sum_nltk_neu/tot_msg, sum_nltk_pos/tot_msg))
+print("The total polarity and subjectivity proportion (%) of the dataset is: polarity: {}, subjectivity: {}".format(sum_txt_blob_pol/tot_msg, sum_txt_blob_subj/tot_msg))
