@@ -32,7 +32,7 @@ Although the dataset is huge (350GB), we will focus on specific communities (sub
 
 Finally, to quantify vulgarity, hate speech and lack of respect in general, we are using two additional datasets:
 1. The first one consists of a list of bad words that we found here: https://data.world/sya/list-of-bad-words. Note that this dataset is noisy. Some words are not bad words (e.g. "Charlie") and some other words are not necessarily considered as bad words by everyone.
-2. The second dataset consists of two different files containing hate speech words or expressions (n-grams). It can be found here: https://data.world/ml-research/automated-hate-speech-detection-hate-speech-lexicons . The first file contains hate speech words which are not necessarily real hate speech. This file is noisy. The second file contains hate speech words from the first file, but has been refined to remove words which were not considered as hate speech. This refinement was done in the context of the following study and paper[^fn1].
+2. The second dataset consists of two different files containing hate speech words or expressions (n-grams). It can be found here: https://data.world/ml-research/automated-hate-speech-detection-hate-speech-lexicons . The first file contains hate speech words which are not necessarily real hate speech. This file is noisy. The second file contains hate speech words from the first file, but has been refined to remove words which were not considered as hate speech. This refinement was done in the context of the companion paper <sup>1</sup>.
 
 
 ## Internal Milestones until Milestone 2
@@ -48,4 +48,4 @@ Finally, to quantify vulgarity, hate speech and lack of respect in general, we a
 
 
 
-[^fn1]: Davidson et al.(2017), Automated Hate Speech Detection and the Problem of Offensive Language._Proceedings of the 11th International AAAI Conference on Web and Social Media_. 
+[1]: Davidson et al.(2017), Automated Hate Speech Detection and the Problem of Offensive Language._Proceedings of the 11th International AAAI Conference on Web and Social Media_. 
