@@ -1,5 +1,7 @@
 # Opinion Polarization on Reddit
 
+**Note for TA's - The notebook with Data Collection can be found at [notebooks/DataCollection.ipynb](https://github.com/MetaHG/Reddit-opinions-polarization/blob/master/notebooks/DataCollection.ipynb) Note that this Readme was also slightly updated with some information specific to Milestone 2.**
+
 ## Abstract
 
 In the recent months following the 2016 American election, many media outlets have argued about an increase in social divisiveness and the polarization of political opinions. The intensification of political debates as well as a growing inability to find common grounds are seen as direct consequences of this divide.
