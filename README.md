@@ -1,6 +1,6 @@
 # Opinion Polarization on Reddit
 
-**Note for TA's - The notebook with Data Collection can be found at [notebooks/DataCollection.ipynb](https://github.com/MetaHG/Reddit-opinions-polarization/blob/master/notebooks/DataCollection.ipynb) Note that this Readme was also slightly updated with some information specific to Milestone 2.**
+**Note for TA's - The notebook with Data Collection can be found at [notebooks/DataCollection.ipynb](https://github.com/MetaHG/Reddit-opinions-polarization/blob/master/notebooks/DataCollection.ipynb). This Readme was also slightly updated with some information specific to Milestone 2.**
 
 ## Abstract
 
