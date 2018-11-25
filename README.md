@@ -24,25 +24,16 @@ Our main dataset will be the [Reddit dataset](http://academictorrents.com/detail
 
 - Reddit is a global forum which is organized through user-constituted communities centered around specific topics (a.k.a. “subreddits”). As such, it is easy to follow the evolution of social behaviors according to the topic the members discuss.
 
-- Reddit allows users to interact with content through a simple system of feedback: each user can “downvote” or “upvote” a content to express whether it was appreciated or not. Reddit also provides additional metrics such as a "controversy" score (controversial topics typically have a high number of both upvotes and downvotes). However, after exploring the dataset, we observed that the upvotes and downvotes where not collected correctly (values are missing or downvotes are always 0) and that the controversy score have a lot missing value for some time period. Our analysis is therefore affected and we will have to find other equivalent metrics.
+- Reddit allows users to interact with content through a simple system of feedback: each user can “downvote” or “upvote” a content to express whether it was appreciated or not. Reddit also provides additional metrics such as a "controversy" score (controversial topics typically have a high number of both upvotes and downvotes). However, after exploring the dataset, we observed that the upvotes and downvotes where not collected correctly (values are missing or downvotes are always 0) and that the controversy score have a lot missing values for some time period. Our analysis is therefore affected and we will have to find other equivalent metrics.
 
 - The dataset provided is highly comprehensive, as it features all of the comments made publicly available from the creation of the site in 2005 until early 2017. This can be useful to determine how trends evolved and fluctuate over a long period of time.
 
 Although the dataset is huge (350GB), we will focus on specific communities (subreddits) and topics in order to better assess divisiveness and its expression within a community.
 
-Finally, we might use additional NLP databases based on the metrics used to analyze the text but this will be decided in the second milestone.
-
 Finally, to quantify vulgarity, hate speech and lack of respect in general, we are using two additional datasets:
 1. The first one consists of a list of bad words that we found here: https://data.world/sya/list-of-bad-words. Note that this dataset is noisy. Some words are not bad words (e.g. "Charlie") and some other words are not necessarily considered as bad words by everyone.
-2. The second dataset consists of two different files containing hate speech words or expressions (n-grams). It can be found here: https://data.world/ml-research/automated-hate-speech-detection-hate-speech-lexicons. The first file contains hate speech words which are not necessarily real hate speech. This file is noisy. The second file contains hate speech words from the first file, but has been refined to remove words which were not considered as hate speech. This refinement was done in the context of the following study and paper:
-@inproceedings{hateoffensive,
-  title={Automated Hate Speech Detection and the Problem of Offensive Language},
-  author={Davidson, Thomas and Warmsley, Dana and Macy, Michael and Weber, Ingmar},
-  booktitle={Proceedings of the 11th International AAAI Conference on Web and Social Media},
-  series={ICWSM '17},
-  year={2017},
-  location = {Montreal, Canada}
-  }
+2. The second dataset consists of two different files containing hate speech words or expressions (n-grams). It can be found here: https://data.world/ml-research/automated-hate-speech-detection-hate-speech-lexicons . The first file contains hate speech words which are not necessarily real hate speech. This file is noisy. The second file contains hate speech words from the first file, but has been refined to remove words which were not considered as hate speech. This refinement was done in the context of the following study and paper[^fn1].
+
 
 ## Internal Milestones until Milestone 2
 
@@ -55,6 +46,6 @@ Finally, to quantify vulgarity, hate speech and lack of respect in general, we a
 
 ## Questions for TAs
 
-- For some metrics we want to use, we will have to do some natural language processing. Do you have any tips on how to proceed efficiently?
-- Did you understand what we meant by divisiveness/polarization of opinion through this milestone?
-- Is our bottom up approach (starting with a selection of specific topics and timeframe then work toward more general ideas and findings) a good start? Or would we rather benefit from a top-down approach (consider the whole reddit dataset and then work toward specific events)?
+
+
+[^fn1]: Davidson et al.(2017), Automated Hate Speech Detection and the Problem of Offensive Language._Proceedings of the 11th International AAAI Conference on Web and Social Media_. 
