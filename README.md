@@ -35,6 +35,48 @@ Finally, to quantify vulgarity, hate speech and lack of respect in general, we a
 2. The second dataset consists of two different files containing hate speech words or expressions (n-grams). It can be found here: https://data.world/ml-research/automated-hate-speech-detection-hate-speech-lexicons . The first file contains hate speech words which are not necessarily real hate speech. This file is noisy. The second file contains hate speech words from the first file, but has been refined to remove words which were not considered as hate speech. This refinement was done in the context of the companion paper <sup>1</sup>.
 
 
+
+## Organisation of the repository :
+
+
+```
+.
++-- _eggs_
++-- _jobs_
++--_notebooks
+|  +--Basic Metrics.ipynb
+|  +--DataCollection.ipynb
+|  +--NLP Metrics.ipynb
+|  +--nlp metrics analysis.ipynb
+|  +--insight.py
+|  +--plot.py
++--_report_
++--_scripts_
+|  +--connect.sh
+|  +--sync.sh
+|  +--run.sh
+|  +--fetch.sh
++--_src_
+|  +--load.py
++-- README.md
+```
+Above is a schematic description of the structure of the repository. As we need to perform computations on the cluster using pyspark, most of the file and folder of the repo serves for this purpose. 
+
+The _eggs_ folder contains the python libraries we need to deploy on the cluster packaged into eggs.
+
+The _jobs_ folder contains the python files with the code needed to be run on the cluster for our computations.
+
+The _notebooks_ folder contains all the notebook that were created in order to do some data exploration and analysis. **DataCollection.ipynb** is the notebook containing the results for this milestone, and the notebook on which we will be working until the end. The other notebook were temporary notebooks used to do some smaller scale computation or testing. The two .py files on this folder are used by the main notebook (DataCollection) in order to reduce the amount of code within it.
+
+The _report_ folder contains the template for the final latex report.
+
+The _scripts_ folder contains shell script we developped in order to facilitate our interaction with the cluster: **connect.sh** allows us to connect to the cluster, **sync.sh** will copy the content from this repository into the user filespace of the cluster, **run.sh** is used to run a selected job from the folder _jobs_ and finally, **fetch.sh** is used to retrieve locally the results from our jobs computed by the cluster saved into parquet format.
+
+The _src_ folder contains all python code that is needed by multiple job for modularity purpose. **load.py** contains function allowing easy loading of the reddit dataset according to a year of choice. 
+
+Finally the _README.md_ file is the one you are currently reading.
+
+
 ## Internal Milestones until Milestone 2
 
 1. Study different metrics and find a suitable measure of divisiveness. These metrics can either be direct (e.g. reddit’s “controversial” score) or indirect (measuring vulgarity, lack of respect, etc…).
@@ -44,8 +86,11 @@ Finally, to quantify vulgarity, hate speech and lack of respect in general, we a
 5. Create initial time series featuring the overall divisiveness over time.
 6. Rank subreddits & topics chosen according to their polarization.
 
+
+
+
 ## Questions for TAs
 
-
+-
 
 [1]: Davidson et al.(2017), Automated Hate Speech Detection and the Problem of Offensive Language._Proceedings of the 11th International AAAI Conference on Web and Social Media_. 
