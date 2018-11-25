@@ -39,5 +39,5 @@ def plot_scores(score_metrics):
     negatives = negatives.set_index(negatives.index.map(lambda x: -x))
     negatives = negatives.sort_index()
 
-    _ = positives.plot(ax=ax[0], logy=True, logx=True)
-    _ = negatives.plot(ax=ax[1], logy=True, logx=True)
+    _ = positives.plot(ax=ax[0], logy=True, logx=True, title='Positive score distribution', legend=False)
+    _ = negatives.plot(ax=ax[1], logy=True, logx=True, title='Negative score distribution', legend=False)
