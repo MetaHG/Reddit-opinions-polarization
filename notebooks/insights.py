@@ -46,12 +46,19 @@ def insights_comments_levels(metrics):
     printmd(
     "> Out of all the comments, **{:,}** (**{:.2f}%** of the dataset) are top-"
     "level comments. This makes an average of **{:.2f}** top-level comments per post. "
-    "The other **{:,}** (**{:.2f}%**) are replies to other comments, with a "
-    "maximum depth of **{}**.".format(
+    "The other **{:,}** (**{:.2f}%**) are replies to other comments.".format(
         metrics['count_top'][0],
         metrics['count_top'][0] / metrics['count_of_comments'][0] * 100,
         metrics['count_top'][0] / metrics['count_of_posts'][0],
         metrics['count_low'][0],
-        metrics['count_low'][0] / metrics['count_of_comments'][0] * 100,
-        "[MISSING: max_depth]"
+        metrics['count_low'][0] / metrics['count_of_comments'][0] * 100
+    ))
+
+def insights_score(metrics):
+
+    printmd(
+    "> The highest score of all the dataset is **{:,}** and the lowest score is **{:,}**."
+    "".format(
+        metrics.index.max(),
+        metrics.index.min()
     ))

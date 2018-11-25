@@ -39,7 +39,10 @@ sc = spark.sparkContext
 execfile("./__pyfiles__/load.py")
 
 # # Load and preprocess sample data
-_, messages = load_data(sc, filter=[2016])
+_, messages = load_data(sc, filter=[2017])
+messages = messages.withColumn('created_utc', func.from_unixtime(messages['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType())) \
+                                .withColumnRenamed('created_utc', 'creation_date')
+
 
 # Prepare stopwords, stemmer and lemmatizer for messages preprocessing.
 en_stopwords = stopwords.words('english')
@@ -47,7 +50,7 @@ en_stemmer = SnowballStemmer('english')
 en_lemmatizer = WordNetLemmatizer()
 
 # Clean messages
-cleaned_messages = messages.filter("body != '[removed]' and body != '[deleted]'")
+cleaned_messages = messages.filter("body != '[removed]' and body != '[deleted]' and month(creation_date) == 1")
 
 
 def process_body(body, n_grams=1, left_pad_symbol=None, right_pad_symbol=None, lemmatizer=None, stemmer=None, \
@@ -164,9 +167,6 @@ spark.udf.register('compute_blob_class_polarity', compute_blob_class_polarity_ud
 ### Other metrics (Vulgarity, hate speech)
 ###
 
-# Process tokens
-tokens = cleaned_messages.selectExpr('id', 'created_utc', 'process_body(body) as tokens')
-
 # Define helper functions
 def count_matches(msg_grams, ref_grams, ref_grams_intensity=None):
     """
@@ -234,82 +234,9 @@ df_count_matches(bw_1_grams, 'bw_count_matches')
 df_count_matches(hw_1_grams, 'hw_count_matches')
 df_count_matches_intensity(hw_ref_1_grams, hw_ref_1_intensity, 'hw_ref_count_matches')
 
-nlp_metrics_df = cleaned_messages.selectExpr('id', 'created_utc', 'body', 'process_body(body) as tokens')
-nlp_metrics_df = nlp_metrics_df.selectExpr('id', 'created_utc', 'body', "compute_nltk_polarity(body) as nltk_scores", "compute_blob_polarity(body) as blob_scores", "bw_count_matches(tokens) as nb_bw_matches", "hw_count_matches(tokens) as nb_hw_matches", "hw_ref_count_matches(tokens) as hw_ref_matches")
-nlp_metrics_df = nlp_metrics_df.selectExpr('id', 'created_utc', 'body', 'nltk_scores.neg as nltk_negativity', 'nltk_scores.neu as nltk_neutrality', 'nltk_scores.pos as nltk_positivity', 'blob_scores.polarity as text_blob_polarity', 'blob_scores.subjectivity as text_blob_subjectivity', 'nb_bw_matches', 'nb_hw_matches', 'hw_ref_matches.intensity as hw_ref_intensity', 'hw_ref_matches.count as nb_hw_ref_matches')
+nlp_metrics_df = cleaned_messages.selectExpr('id', 'creation_date', 'body', 'process_body(body) as tokens')
+nlp_metrics_df = nlp_metrics_df.selectExpr('id', 'creation_date', 'body', "compute_nltk_polarity(body) as nltk_scores", "compute_blob_polarity(body) as blob_scores", "bw_count_matches(tokens) as nb_bw_matches", "hw_count_matches(tokens) as nb_hw_matches", "hw_ref_count_matches(tokens) as hw_ref_matches")
+nlp_metrics_df = nlp_metrics_df.selectExpr('id', 'creation_date', 'body', 'nltk_scores.neg as nltk_negativity', 'nltk_scores.neu as nltk_neutrality', 'nltk_scores.pos as nltk_positivity', 'blob_scores.polarity as text_blob_polarity', 'blob_scores.subjectivity as text_blob_subjectivity', 'nb_bw_matches', 'nb_hw_matches', 'hw_ref_matches.intensity as hw_ref_intensity', 'hw_ref_matches.count as nb_hw_ref_matches')
 
-nlp_metrics_df = nlp_metrics_df.withColumn('created_utc', func.from_unixtime(nlp_metrics_df['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType())) \
-                                .withColumnRenamed('created_utc', 'creation_date')
-
-nlp_metrics_df.registerTempTable("nlp_metrics")
-
-# Compute daily average metrics
-daily_nlp_metrics = spark.sql("""
-SELECT
-    creation_date,
-    
-    AVG(sum_nltk_negativity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nltk_negativity_60d_avg,
-    
-    AVG(sum_nltk_neutrality) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nltk_neutrality_60d_avg,
-    
-    AVG(sum_nltk_positivity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nltk_positivity_60d_avg,
-    
-    AVG(sum_text_blob_polarity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS text_blob_polarity_60d_avg,
-    
-    AVG(sum_text_blob_subjectivity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS text_blob_subjectivity_60d_avg,
-    
-    AVG(sum_nb_bw_matches) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nb_bw_matches_60d_avg,
-    
-    AVG(sum_nb_hw_matches) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nb_hw_matches_60d_avg,
-    
-    AVG(sum_hw_ref_intensity) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS hw_ref_intensity_60d_avg,
-    
-    AVG(sum_nb_hw_ref_matches) OVER (
-        ORDER BY creation_date
-        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS nb_hw_ref_matches_60d_avg
-    
-FROM (
-    SELECT
-        creation_date,
-        SUM(nltk_negativity) AS sum_nltk_negativity,
-        SUM(nltk_neutrality) AS sum_nltk_neutrality,
-        SUM(nltk_positivity) AS sum_nltk_positivity,
-        SUM(text_blob_polarity) AS sum_text_blob_polarity,
-        SUM(text_blob_subjectivity) AS sum_text_blob_subjectivity, 
-        SUM(nb_bw_matches) AS sum_nb_bw_matches,
-        SUM(nb_hw_matches) AS sum_nb_hw_matches,
-        SUM(hw_ref_intensity) AS sum_hw_ref_intensity,
-        SUM(nb_hw_ref_matches) AS sum_nb_hw_ref_matches
-    FROM nlp_metrics
-    GROUP BY creation_date
-    ORDER BY creation_date
-)
-""")
-
-daily_nlp_metrics.write.mode('overwrite').parquet('daily_nlp_metrics.parquet')
+nlp_metrics_df.write.mode('overwrite').parquet('daily_nlp_metrics_full.parquet')
 #daily_nlp_metrics.write.csv('daily_nlp_metrics.tsv', mode='overwrite', compression='gzip', sep='\t', header=True, timestampFormat='yyyy-MM-dd HH:mm:ss.SS')
