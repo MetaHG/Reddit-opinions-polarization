@@ -11,9 +11,11 @@ def plot_daily_metric(df, key, ax=None):
     ax.set_xlabel("Date")
 
     if key == "count_of_comments":
-        legend = "Count of comments"
-    if key == "count_of_users":
+        legend = "Daily comments"
+    elif key == "count_of_users":
         legend = "Daily active users"
+    elif key == "prop_of_controversial":
+        legend = "Daily prop. of controversial comments"
     else:
         legend = key
 

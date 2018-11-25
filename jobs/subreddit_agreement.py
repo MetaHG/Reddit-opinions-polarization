@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
     subreddit_agreement = spark.sql("""
     SELECT 
+        subreddit,
         COUNT(*) AS count,
         SUM(CASE WHEN score > 0 THEN 1 ELSE 0 END) AS count_pos,
         SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END) AS count_neg,
@@ -33,4 +34,4 @@ if __name__ == "__main__":
     HAVING COUNT(*) > 100
     """)
 
-    subreddit_agreement.write.mode('overwrite').parquet('subreddit_agreement.parquet')
+    subreddit_agreement.write.mode('overwrite').parquet('subreddit_agreement_3.parquet')
