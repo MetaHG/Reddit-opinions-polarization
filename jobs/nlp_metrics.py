@@ -23,6 +23,7 @@ from textblob.sentiments import NaiveBayesAnalyzer
 
 # Standard library
 from collections import Counter
+import os
 
 ###
 ###
@@ -38,7 +39,7 @@ sc = spark.sparkContext
 execfile("./__pyfiles__/load.py")
 
 # # Load and preprocess sample data
-_, messages = load_data(sc)
+_, messages = load_data(sc, filter=[2016])
 
 # Prepare stopwords, stemmer and lemmatizer for messages preprocessing.
 en_stopwords = stopwords.words('english')
@@ -135,13 +136,6 @@ def compute_nltk_polarity(msg_body):
 compute_nltk_polarity_udf = func.udf(compute_nltk_polarity, MapType(StringType(), FloatType(), False))
 spark.udf.register('compute_nltk_polarity', compute_nltk_polarity_udf)
 
-sent_bodies = cleaned_messages.selectExpr('id', 'created_utc', "compute_nltk_polarity(body) as scores")
-sent_nltk_scores = sent_bodies.select('id', 'created_utc', 'scores.neg', 'scores.neu', 'scores.pos')
-sent_nltk_scores = sent_nltk_scores.toDF('id', 'created_utc', 'nltk_negativity', 'nltk_neutrality', 'nltk_positivity')
-
-# Save to parquet
-#sent_nltk_scores.write.mode('overwrite').parquet('sent_nltk_scores_parquet')
-
 ###
 ### Sentence polarity using TextBlob
 ###
@@ -154,13 +148,6 @@ def compute_blob_polarity(msg_body):
 compute_blob_polarity_udf = func.udf(compute_blob_polarity, MapType(StringType(), FloatType(), False))
 spark.udf.register('compute_blob_polarity', compute_blob_polarity_udf)
 
-sent_blob_bodies = cleaned_messages.selectExpr('id', 'created_utc', "compute_blob_polarity(body) as scores")
-sent_blob_scores = sent_blob_bodies.select('id', 'created_utc', 'scores.polarity', 'scores.subjectivity')
-sent_blob_scores = sent_blob_scores.toDF('id', 'created_utc', 'text_blob_polarity', 'text_blob_subjectivity')
-
-# Save to parquet
-#sent_blob_scores.write.mode('overwrite').parquet('sent_blob_scores_parquet')
-
 
 # Using twitter trained positive/negative naive bayes classifier
 def compute_blob_class_polarity(msg_body):
@@ -170,11 +157,7 @@ def compute_blob_class_polarity(msg_body):
 compute_blob_class_polarity_udf = func.udf(compute_blob_class_polarity, MapType(StringType(), FloatType(), False))
 spark.udf.register('compute_blob_class_polarity', compute_blob_class_polarity_udf)
 
-sent_blob_class_bodies = cleaned_messages.selectExpr('id', 'created_utc', "compute_blob_class_polarity(body) as scores")
-sent_blob_class_scores = sent_blob_class_bodies.select('id', 'created_utc', 'scores.classification', 'scores.p_pos', 'scores.p_neg')
-
 # This does not finish, classifier takes too long
-# sent_blob_class_scores.show()
 
 
 ###
@@ -213,59 +196,47 @@ def count_matches(msg_grams, ref_grams, ref_grams_intensity=None):
     else: 
         return {'count':count, 'intensity':intensity}
     
-def df_count_matches(gram_list):
-    return func.udf(lambda c: count_matches(c, gram_list), FloatType())
+def df_count_matches(gram_list, sql_fun_name):
+    udf = func.udf(lambda c: count_matches(c, gram_list), FloatType())
+    spark.udf.register(sql_fun_name, udf)
 
-def df_count_matches_intensity(gram_list, intensity_list):
-    return func.udf(lambda c: count_matches(c, gram_list, intensity_list), MapType(StringType(), FloatType()))
-
+def df_count_matches_intensity(gram_list, intensity_list, sql_fun_name):
+    udf = func.udf(lambda c: count_matches(c, gram_list, intensity_list), MapType(StringType(), FloatType()))
+    spark.udf.register(sql_fun_name, udf)
 
 ### Vulgarity
-bad_words = spark.read.csv('./lexicons.zip/lexicons/bad_words_lexicon/en.csv', header=True)
+bad_words = spark.read.csv('lexicons/bad_words_lexicon/en.csv', header=True)
 bw_gram_rank = bad_words.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('en_bad_words')))
-bw_gram_rank.show()
 
 bw_1_grams = [i.en_bad_words for i in bw_gram_rank.filter('gram_rank == 1').select('en_bad_words').collect()]
-
-bw_counter = tokens.withColumn("tokens", df_count_matches(bw_1_grams)(func.col("tokens"))).withColumnRenamed('tokens', 'nb_bw_matches')
-
-# Save to parquet
-#bw_counter.write.mode('overwrite').parquet('vulgarity_scores_parquet')
 
 
 # Hate speech
 ## Raw hate words (basic)
-hate_words = spark.read.csv('./lexicons.zip/lexicons/hatespeech_lexicon/hatebase_dict.csv', header=True)
+hate_words = spark.read.csv('lexicons/hatespeech_lexicon/hatebase_dict.csv', header=True)
 hate_words = hate_words.withColumnRenamed("uncivilised',", 'hate_words')                         .withColumn('hate_words', func.udf(lambda d: d[1:-2])(func.col('hate_words')))
 hw_gram_rank = hate_words.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('hate_words')))
 
 hw_1_grams = [i.hate_words for i in hw_gram_rank.filter('gram_rank == 1').select('hate_words').collect()]
 
-hw_counter = tokens.withColumn("tokens", df_count_matches(hw_1_grams)(func.col("tokens"))).withColumnRenamed('tokens', 'nb_hw_matches')
-
-# Save to parquet
-#hw_counter.write.mode('overwrite').parquet('hate_speech_scores_parquet')
-
 
 ## Refined hate words
 hw_ref_schema = StructType([StructField('hate_words_ref', StringType(), False), StructField('intensity', FloatType(), False)])
-hate_words_ref = spark.read.csv('./lexicons.zip/lexicons/hatespeech_lexicon/refined_ngram_dict.csv', header=True, schema=hw_ref_schema)
+hate_words_ref = spark.read.csv('lexicons/hatespeech_lexicon/refined_ngram_dict.csv', header=True, schema=hw_ref_schema)
 hw_ref_gram_rank = hate_words_ref.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('hate_words_ref')))
 
 hw_ref_1_grams = [i.hate_words_ref for i in hw_ref_gram_rank.filter('gram_rank == 1').select('hate_words_ref').collect()]
 hw_ref_1_intensity = [i.intensity for i in hw_ref_gram_rank.filter('gram_rank == 1').select('intensity').collect()]
 
-hw_ref_counter = tokens.withColumn("tokens", df_count_matches_intensity(hw_ref_1_grams, hw_ref_1_intensity)(func.col("tokens"))).withColumnRenamed('tokens', 'nb_hw_ref_matches')
-hw_ref_scores = hw_ref_counter.select('id', 'created_utc', 'nb_hw_ref_matches.intensity', 'nb_hw_ref_matches.count')
-hw_ref_scores = hw_ref_scores.toDF('id', 'created_utc', 'hate_ref_intensity', 'nb_hw_ref_matches')
 
-# Save to parquet
-#hw_ref_scores.write.mode('overwrite').parquet('hate_speech_refined_scores_parquet')
-nlp_metrics_df = (sent_nltk_scores
-    .join(sent_blob_scores, on=['id', 'created_utc'])
-    .join(bw_counter, on=['id', 'created_utc'])
-    .join(hw_counter, on=['id', 'created_utc'])
-    .join(hw_ref_scores, on=['id', 'created_utc']))
+# Compute all metrics
+df_count_matches(bw_1_grams, 'bw_count_matches')
+df_count_matches(hw_1_grams, 'hw_count_matches')
+df_count_matches_intensity(hw_ref_1_grams, hw_ref_1_intensity, 'hw_ref_count_matches')
+
+nlp_metrics_df = cleaned_messages.selectExpr('id', 'created_utc', 'body', 'process_body(body) as tokens')
+nlp_metrics_df = nlp_metrics_df.selectExpr('id', 'created_utc', 'body', "compute_nltk_polarity(body) as nltk_scores", "compute_blob_polarity(body) as blob_scores", "bw_count_matches(tokens) as nb_bw_matches", "hw_count_matches(tokens) as nb_hw_matches", "hw_ref_count_matches(tokens) as hw_ref_matches")
+nlp_metrics_df = nlp_metrics_df.selectExpr('id', 'created_utc', 'body', 'nltk_scores.neg as nltk_negativity', 'nltk_scores.neu as nltk_neutrality', 'nltk_scores.pos as nltk_positivity', 'blob_scores.polarity as text_blob_polarity', 'blob_scores.subjectivity as text_blob_subjectivity', 'nb_bw_matches', 'nb_hw_matches', 'hw_ref_matches.intensity as hw_ref_intensity', 'hw_ref_matches.count as nb_hw_ref_matches')
 
 nlp_metrics_df = nlp_metrics_df.withColumn('created_utc', func.from_unixtime(nlp_metrics_df['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType())) \
                                 .withColumnRenamed('created_utc', 'creation_date')
@@ -311,10 +282,10 @@ SELECT
         RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
     ) AS nb_hw_matches_60d_avg,
     
-    AVG(sum_hate_ref_intensity) OVER (
+    AVG(sum_hw_ref_intensity) OVER (
         ORDER BY creation_date
         RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
-    ) AS hate_ref_intensity_60d_avg,
+    ) AS hw_ref_intensity_60d_avg,
     
     AVG(sum_nb_hw_ref_matches) OVER (
         ORDER BY creation_date
@@ -331,7 +302,7 @@ FROM (
         SUM(text_blob_subjectivity) AS sum_text_blob_subjectivity, 
         SUM(nb_bw_matches) AS sum_nb_bw_matches,
         SUM(nb_hw_matches) AS sum_nb_hw_matches,
-        SUM(hate_ref_intensity) AS sum_hate_ref_intensity,
+        SUM(hw_ref_intensity) AS sum_hw_ref_intensity,
         SUM(nb_hw_ref_matches) AS sum_nb_hw_ref_matches
     FROM nlp_metrics
     GROUP BY creation_date
@@ -340,3 +311,4 @@ FROM (
 """)
 
 daily_nlp_metrics.write.mode('overwrite').parquet('daily_nlp_metrics.parquet')
+#daily_nlp_metrics.write.csv('daily_nlp_metrics.tsv', mode='overwrite', compression='gzip', sep='\t', header=True, timestampFormat='yyyy-MM-dd HH:mm:ss.SS')
