@@ -96,3 +96,5 @@ FROM (
     ORDER BY creation_date
 )
 """)
+
+daily_nltk_metrics.write.mode('overwrite').parquet('nlp_nltk_metrics_daily.parquet')
