@@ -90,7 +90,7 @@ FROM (
         COUNT(*) AS msg_count,
         SUM(nltk_negativity) AS sum_nltk_negativity,
         SUM(nltk_neutrality) AS sum_nltk_neutrality,
-        SUM(nltk_positivity) AS sum_nltk_positivity,
+        SUM(nltk_positivity) AS sum_nltk_positivity
     FROM nlp_nltk_metrics
     GROUP BY creation_date
     ORDER BY creation_date
