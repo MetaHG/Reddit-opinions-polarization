@@ -50,7 +50,7 @@ def compute_nltk_polarity(msg_body):
 compute_nltk_polarity_udf = func.udf(compute_nltk_polarity, MapType(StringType(), FloatType(), False))
 spark.udf.register('compute_nltk_polarity', compute_nltk_polarity_udf)
 
-# Load and preprocess sample data
+# # Load and preprocess sample data
 _, messages = load_data(sc, sample=0.001)
 messages = messages.withColumn('created_utc', func.from_unixtime(messages['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType())) \
                                 .withColumnRenamed('created_utc', 'creation_date')
@@ -63,16 +63,42 @@ nlp_nltk_polartiy = nlp_nltk_polartiy.selectExpr('id', 'creation_date', 'nltk_sc
 
 nlp_nltk_polartiy.registerTempTable("nlp_nltk_metrics")
 
+# Compute daily average metrics
 daily_nltk_metrics = spark.sql("""
 SELECT
     creation_date,
-    COUNT(*) AS msg_count,
-    SUM(nltk_negativity) AS sum_nltk_negativity,
-    SUM(nltk_neutrality) AS sum_nltk_neutrality,
-    SUM(nltk_positivity) AS sum_nltk_positivity
-FROM nlp_nltk_metrics
-GROUP BY creation_date
-ORDER BY creation_date
+    
+    AVG(msg_count) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLOWING
+    ) AS msg_count_60d_avg,
+
+    AVG(sum_nltk_negativity) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS nltk_negativity_60d_avg,
+
+    AVG(sum_nltk_neutrality) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS nltk_neutrality_60d_avg,
+    
+    AVG(sum_nltk_positivity) OVER (
+        ORDER BY creation_date
+        RANGE BETWEEN 30 PRECEDING AND 30 FOLLOWING
+    ) AS nltk_positivity_60d_avg
+
+FROM (
+    SELECT
+        creation_date,
+        COUNT(*) AS msg_count,
+        SUM(nltk_negativity) AS sum_nltk_negativity,
+        SUM(nltk_neutrality) AS sum_nltk_neutrality,
+        SUM(nltk_positivity) AS sum_nltk_positivity
+    FROM nlp_nltk_metrics
+    GROUP BY creation_date
+    ORDER BY creation_date
+)
 """)
 
-daily_nltk_metrics.write.mode('overwrite').parquet('nlp_nltk_metrics_daily.parquet')
+daily_nltk_metrics.write.mode('overwrite').parquet('nlp_nltk_metrics_daily_60d_avg.parquet')
