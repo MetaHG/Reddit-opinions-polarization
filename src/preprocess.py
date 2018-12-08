@@ -31,10 +31,6 @@ en_stopwords = stopwords.words('english')
 en_stemmer = SnowballStemmer('english')
 en_lemmatizer = WordNetLemmatizer()
 
-# Clean messages
-cleaned_messages = messages.filter("body != '[removed]' and body != '[deleted]'")
-
-
 def process_body(body, n_grams=1, left_pad_symbol=None, right_pad_symbol=None, lemmatizer=None, stemmer=None, \
                 stop_words=None, lemmatize_stop_words=False, stem_stop_words=False, remove_stop_words=False):
     """

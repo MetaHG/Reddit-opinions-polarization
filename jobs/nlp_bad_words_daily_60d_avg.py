@@ -37,6 +37,7 @@ sc = spark.sparkContext
 
 # Import dependencies ZIP
 execfile("./__pyfiles__/load.py")
+execfile("./__pyfiles__/preprocess.py")
 
 ###
 ### Other metrics (Vulgarity, hate speech)
@@ -79,7 +80,7 @@ messages = messages.withColumn('created_utc', func.from_unixtime(messages['creat
 bad_words = spark.read.csv('lexicons/bad_words_lexicon/en.csv', header=True)
 bw_gram_rank = bad_words.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('en_bad_words')))
 
-bw_1_grams = {i.en_bad_words: np.inf for i in bw_gram_rank.filter('gram_rank == 1').select('en_bad_words').collect()}
+bw_1_grams = Counter({i.en_bad_words: np.inf for i in bw_gram_rank.filter('gram_rank == 1').select('en_bad_words').collect()})
 
 
 # Clean messages

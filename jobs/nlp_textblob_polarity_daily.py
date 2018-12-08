@@ -51,7 +51,7 @@ spark.udf.register('compute_blob_polarity', compute_blob_polarity_udf)
 
 
 # Load and preprocess sample data
-_, messages = load_data(sc, sample=0.001)
+_, messages = load_data(sc, filter=[2015, 2016, 2017], sample=0.1)
 messages = messages.withColumn('created_utc', func.from_unixtime(messages['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType())) \
                                 .withColumnRenamed('created_utc', 'creation_date')
 
@@ -68,10 +68,10 @@ SELECT
     creation_date,
     COUNT(*) AS msg_count,
     SUM(text_blob_polarity) AS sum_blob_polarity,
-    SUM(text_blob_subjectivity) AS sum_blob_subjectivity,
+    SUM(text_blob_subjectivity) AS sum_blob_subjectivity
 FROM nlp_blob_metrics
 GROUP BY creation_date
 ORDER BY creation_date
 """)
 
-daily_blob_metrics.write.mode('overwrite').parquet('nlp_blob_metrics_daily.parquet')
+daily_blob_metrics.write.mode('overwrite').parquet('nlp_blob_metrics_daily_full_15_17_0.1.parquet')

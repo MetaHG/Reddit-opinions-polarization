@@ -87,7 +87,7 @@ FROM (
         creation_date,
         COUNT(*) AS msg_count,
         SUM(text_blob_polarity) AS sum_blob_polarity,
-        SUM(text_blob_subjectivity) AS sum_blob_subjectivity,
+        SUM(text_blob_subjectivity) AS sum_blob_subjectivity
     FROM nlp_blob_metrics
     GROUP BY creation_date
     ORDER BY creation_date

@@ -51,7 +51,7 @@ compute_nltk_polarity_udf = func.udf(compute_nltk_polarity, MapType(StringType()
 spark.udf.register('compute_nltk_polarity', compute_nltk_polarity_udf)
 
 # Load and preprocess sample data
-_, messages = load_data(sc, sample=0.001)
+_, messages = load_data(sc, filter=[2015, 2016, 2017], sample=0.01)
 messages = messages.withColumn('created_utc', func.from_unixtime(messages['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType())) \
                                 .withColumnRenamed('created_utc', 'creation_date')
 
@@ -75,4 +75,4 @@ GROUP BY creation_date
 ORDER BY creation_date
 """)
 
-daily_nltk_metrics.write.mode('overwrite').parquet('nlp_nltk_metrics_daily.parquet')
+daily_nltk_metrics.write.mode('overwrite').parquet('nlp_nltk_metrics_daily_15_17_0.1.parquet')

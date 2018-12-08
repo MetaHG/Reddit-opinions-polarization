@@ -76,33 +76,36 @@ _, messages = load_data(sc, filter=[2015, 2016, 2017], sample=0.1)
 messages = messages.withColumn('created_utc', func.from_unixtime(messages['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType())) \
                                 .withColumnRenamed('created_utc', 'creation_date')
 
-### Vulgarity
-bad_words = spark.read.csv('lexicons/bad_words_lexicon/en.csv', header=True)
-bw_gram_rank = bad_words.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('en_bad_words')))
+# Refined hate words
+hw_ref_schema = StructType([StructField('hate_words_ref', StringType(), False), StructField('intensity', FloatType(), False)])
+hate_words_ref = spark.read.csv('lexicons/hatespeech_lexicon/refined_ngram_dict.csv', header=True, schema=hw_ref_schema)
+hw_ref_gram_rank = hate_words_ref.withColumn('gram_rank', func.udf(lambda gram: len(gram.split()), IntegerType())(func.col('hate_words_ref')))
 
-bw_1_grams = Counter({i.en_bad_words: np.inf for i in bw_gram_rank.filter('gram_rank == 1').select('en_bad_words').collect()})
+hw_ref_1_grams = Counter({i.hate_words_ref: np.inf for i in hw_ref_gram_rank.filter('gram_rank == 1').select('hate_words_ref').collect()})
+hw_ref_1_intensity = {i.hate_words_ref: i.intensity for i in hw_ref_gram_rank.filter('gram_rank == 1').select('hate_words_ref', 'intensity').collect()}
 
 
 # Clean messages
 cleaned_messages = messages.filter("body != '[removed]' and body != '[deleted]'")
 
 # Compute all metrics
-df_count_matches(bw_1_grams, 'bw_count_matches')
+df_count_matches_intensity(hw_ref_1_grams, hw_ref_1_intensity, 'hw_ref_count_matches')
 
-nlp_bw = cleaned_messages.selectExpr('id', 'creation_date', 'body', 'process_body(body) as tokens')
-nlp_bw = nlp_bw.selectExpr('id', 'creation_date', 'body', "bw_count_matches(tokens) as nb_bw_matches")
-nlp_bw = nlp_bw.selectExpr('id', 'creation_date', 'nb_bw_matches')
+nlp_hw = cleaned_messages.selectExpr('id', 'creation_date', 'body', 'process_body(body) as tokens')
+nlp_hw = nlp_hw.selectExpr('id', 'creation_date', 'body', "hw_ref_count_matches(tokens) as hw_ref_matches")
+nlp_hw = nlp_hw.selectExpr('id', 'creation_date', 'hw_ref_matches.count as nb_hw_ref_matches', 'hw_ref_matches.intensity as hw_ref_intensity')
 
-nlp_bw.registerTempTable("nlp_bw_metrics")
+nlp_hw.registerTempTable("nlp_hw_metrics")
 
-daily_bw_metrics = spark.sql("""
+daily_hw_metrics = spark.sql("""
 SELECT
     creation_date,
     COUNT(*) AS msg_count,
-    SUM(nb_bw_matches) AS sum_nb_bw_matches
-FROM nlp_bw_metrics
+    SUM(nb_hw_ref_matches) AS sum_nb_hw_ref_matches,
+    SUM(hw_ref_intensity) AS sum_hw_ref_intensity
+FROM nlp_hw_metrics
 GROUP BY creation_date
 ORDER BY creation_date
 """)
 
-daily_bw_metrics.write.mode('overwrite').parquet('nlp_bw_metrics_daily_15_17_0.1.parquet')
+daily_hw_metrics.write.mode('overwrite').parquet('nlp_ref_hw_metrics_daily_15_17_0.1.parquet')
