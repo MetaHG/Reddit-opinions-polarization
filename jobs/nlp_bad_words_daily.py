@@ -60,10 +60,10 @@ def count_matches(msg_grams, ref_grams_counter, ref_grams_intensity=None):
         return count
     else:
         intensity = sum(res_intensity.values())
-        return {'count':count, 'intensity':intensity}
+        return {'count':float(count), 'intensity':intensity}
     
 def df_count_matches(gram_counter, sql_fun_name):
-    udf = func.udf(lambda c: count_matches(c, gram_counter), FloatType())
+    udf = func.udf(lambda c: count_matches(c, gram_counter), IntegerType())
     spark.udf.register(sql_fun_name, udf)
 
 def df_count_matches_intensity(gram_counter, intensity_dict, sql_fun_name):
@@ -72,7 +72,7 @@ def df_count_matches_intensity(gram_counter, intensity_dict, sql_fun_name):
 
 
 # Load and preprocess sample data
-_, messages = load_data(sc, filter=[2015, 2016, 2017], sample=0.1)
+_, messages = load_data(sc, sample=0.01)
 messages = messages.withColumn('created_utc', func.from_unixtime(messages['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType())) \
                                 .withColumnRenamed('created_utc', 'creation_date')
 
@@ -105,4 +105,4 @@ GROUP BY creation_date
 ORDER BY creation_date
 """)
 
-daily_bw_metrics.write.mode('overwrite').parquet('nlp_bw_metrics_daily_15_17_0.1.parquet')
+daily_bw_metrics.write.mode('overwrite').parquet('nlp_bw_metrics_daily_full_0.01.parquet')
