@@ -10,10 +10,13 @@ sc = spark.sparkContext
 
 from nltk.corpus import stopwords
 en_stop = set(stopwords.words('english'))
+#broadcasting so each node have access to this variable.
 sc.broadcast(en_stop)
 
 # Import dependencies ZIP
 # sc.addPyFile('src/load.py')
+# Import dependencies ZIP
+# sc.addPyFile('src/lda.py')
 
 execfile("./__pyfiles__/load.py")
 execfile("./__pyfiles__/lda.py")
@@ -38,15 +41,8 @@ if __name__ == "__main__":
     cleaned_preprocessed = dataset_cleaning_and_preprocessing(year_b4_election_news_comments, en_stop)
     individual_keys = cleaned_preprocessed.keys().distinct().collect()
 
-    lda_res = [lda_and_min_date(cleaned_preprocessed.filter(lambda r: r[0] == post_id), 2, 3) for post_id in individual_keys]
+    lda_res = [lda_and_min_date(cleaned_preprocessed.filter(lambda r: r[0] == post_id), 1, 3) for post_id in individual_keys]
 
     sqlContext = SQLContext(sc)
-    schema = StructType([
-        StructField("topics",    ArrayType(),   False),
-        StructField("created",     DateType(),   False),
-    ])
-
-    res_df = sqlContext.createDataFrame(sc.parallelize(lda_res), schema)
+    res_df = sc.parallelize(lda_res).toDF().selectExpr("_1 as topic", "_2 as date")
     res_df.write.mode('overwrite').parquet('2016_news_lda.parquet')
-
-    

@@ -2,8 +2,6 @@ import pyspark
 from pyspark.sql.types import *
 from pyspark import SQLContext
 
-from nltk.corpus import wordnet as wn
-
 import datetime
 import re as re
 
@@ -16,7 +14,8 @@ def reddit_comment_preprocessing(txt, stop_words):
     Take care of doing all the text preprocessing for LDA at the comment level
     Only works on english ASCII content. (works on content with accent or such, but filter them out)
     '''
-    #TODO : maybe remove http links.
+    #necessary apparently to avoid this error "pickle.PicklingError: args[0] from newobj args has the wrong class"
+    from nltk.corpus import wordnet
     
     #keeping only elements relevant to written speech.
     keep_only_letters = lambda s: re.sub('[^a-zA-Z \']+', '', s)
@@ -27,14 +26,14 @@ def reddit_comment_preprocessing(txt, stop_words):
     #tokenizing the texts (removing line break, space and capitalization)
     token_comm = re.split(" ", remove_genitive(keep_only_letters(txt)).strip().lower())
     
-    #removing all words of two letters or less
-    bigger_w = [x for x in token_comm if len(x) > 2] 
+    #removing all words of three letters or less
+    bigger_w = [x for x in token_comm if len(x) > 3] 
     
     #removing stop_words
     wout_sw_w = [x for x in bigger_w if x not in stop_words]
     
     def get_lemma(word):
-        lemma = wn.morphy(word)
+        lemma = wordnet.morphy(word)
         return word if lemma is None else lemma
     
     #get lemma of each word, then return result
@@ -81,7 +80,7 @@ def perform_lda(documents, n_topics, n_words):
     result_tfidf = idfModel.transform(result_cv) 
     
     corpus = result_tfidf.select("uid", "features").rdd.map(lambda r: [r[0],Vectors.fromML(r[1])])
-    model = LDA.train(corpus, k=n_topics)
+    model = LDA.train(corpus, k=n_topics, maxIterations=10)
 
     topics = model.describeTopics(maxTermsPerTopic=n_words)
     
@@ -91,7 +90,6 @@ def perform_lda(documents, n_topics, n_words):
     
     #topic[0] represents the words, topic[1] their weights
     return [[(vocab[topic[0][n]], topic[1][n]) for n in range(len(topic[0]))] for _, topic in enumerate(topics)]
-
 
 
 def lda_and_min_date(in_rdd, n_topics, n_words):
