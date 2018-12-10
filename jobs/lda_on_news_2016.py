@@ -9,9 +9,18 @@ spark.conf.set('spark.sql.session.timeZone', 'UTC')
 sc = spark.sparkContext
 
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+
+import nltk
+nltk.download('wordnet')
+
 en_stop = set(stopwords.words('english'))
-#broadcasting so each node have access to this variable.
+en_lemmatizer = WordNetLemmatizer()
+sc = spark.sparkContext
+
+#for both variables to be available on all nodes.
 sc.broadcast(en_stop)
+sc.broadcast(en_lemmatizer)
 
 # Import dependencies ZIP
 # sc.addPyFile('src/load.py')
@@ -38,7 +47,7 @@ if __name__ == "__main__":
     end_date = datetime.date(year=2016, month=11, day=8)
     year_b4_election_news_comments = comments.filter(comments.created > start_date).filter(comments.created < end_date).filter(comments.subreddit == 'news')
     
-    cleaned_preprocessed = dataset_cleaning_and_preprocessing(year_b4_election_news_comments, en_stop)
+    cleaned_preprocessed = dataset_cleaning_and_preprocessing(year_b4_election_news_comments, en_stop, en_lemmatizer)
     individual_keys = cleaned_preprocessed.keys().distinct().collect()
 
     lda_res = [lda_and_min_date(cleaned_preprocessed.filter(lambda r: r[0] == post_id), 1, 3) for post_id in individual_keys]

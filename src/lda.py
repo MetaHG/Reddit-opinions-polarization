@@ -9,7 +9,7 @@ from pyspark.ml.feature import CountVectorizer , IDF
 from pyspark.mllib.linalg import Vector, Vectors
 from pyspark.mllib.clustering import LDA
 
-def reddit_comment_preprocessing(txt, stop_words):
+def reddit_comment_preprocessing(txt, stop_words, lemmatizer):
     '''
     Take care of doing all the text preprocessing for LDA at the comment level
     Only works on english ASCII content. (works on content with accent or such, but filter them out)
@@ -32,15 +32,11 @@ def reddit_comment_preprocessing(txt, stop_words):
     #removing stop_words
     wout_sw_w = [x for x in bigger_w if x not in stop_words]
     
-    def get_lemma(word):
-        lemma = wordnet.morphy(word)
-        return word if lemma is None else lemma
-    
     #get lemma of each word, then return result
-    return [get_lemma(token) for token in wout_sw_w]
+    return [lemmatizer.lemmatize(word) for word in wout_sw_w]
 
 
-def dataset_cleaning_and_preprocessing(data, stop_words):
+def dataset_cleaning_and_preprocessing(data, stop_words, lemmatizer):
     '''
     take a pyspark dataframe as input,
     transform it into a RDD, and filter all 
@@ -54,7 +50,7 @@ def dataset_cleaning_and_preprocessing(data, stop_words):
     filtered = dataset.filter(dataset.body != '[removed]').filter(dataset.body != '[deleted]').filter(dataset.body != '')
     
     #applying comment preprocessing for LDA
-    preprocessed = filtered.rdd.map(lambda r: (r[0], reddit_comment_preprocessing(r[1], stop_words), r[2]))
+    preprocessed = filtered.rdd.map(lambda r: (r[0], reddit_comment_preprocessing(r[1], stop_words, lemmatizer), r[2]))
     
     #we return only posts which have actual textual comments. (hence the filter with the second row element (pythonic way of testing non emptiness of list))
     preprocessed_filtered = preprocessed.filter(lambda r : r[1])
