@@ -1,4 +1,3 @@
-
 from pyspark.sql import *
 
 # Create Spark Config
@@ -16,6 +15,5 @@ from load import load_data
 if __name__ == "__main__":
 
     # Load data
-    rdd, df = load_data(sc, [2005])
-
-    print("The selected dataset has {} entries.".format(df.count()))
+    rdd, df = load_data(sc, sample=0.002)
+    df.write.mode('overwrite').parquet('sample.parquet')

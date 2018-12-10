@@ -12,7 +12,7 @@ def clean_data(x):
 
     return x
 
-def load_data(sc, filter=None, sample=True):
+def load_data(sc, filter=None, sample=None):
 
     if filter is None:
 
@@ -34,8 +34,8 @@ def load_data(sc, filter=None, sample=True):
 
         raise NotImplementedError("filter must be either an array, a dictionary or None.")
 
-    if sample:
-        rdd = rdd.sample(False, 0.005, 0)
+    if sample is not None:
+        rdd = rdd.sample(False, sample, 0)
 
     schema = StructType([
         StructField("distinguished",    StringType(),   True),
@@ -48,14 +48,20 @@ def load_data(sc, filter=None, sample=True):
         StructField("author",           StringType(),   True),
         StructField("score",            IntegerType(),  False),
         StructField("ups",              IntegerType(),  True),
+        StructField("downs",            IntegerType(),  True),
         StructField("created_utc",      StringType(),   False),
+        StructField("author_flair_text", StringType(), True),
+        StructField("author_flair_css_class", StringType(), True),
+        StructField("author_flair_context", StringType(), True),
         StructField("flair_css_class",  StringType(),   True),
         StructField("subreddit",        StringType(),   False),
         StructField("subreddit_id",     StringType(),   False),
+        StructField("score_hidden",     BooleanType(),  True),
         StructField("stickied",         BooleanType(),  True),
         StructField("link_id",          StringType(),   True),
         StructField("controversiality", IntegerType(),  False),
         StructField("body",             StringType(),   False),
+        StructField("archived",         BooleanType(),  True)
     ])
 
     # Create SQL context from SparkContext
@@ -63,6 +69,6 @@ def load_data(sc, filter=None, sample=True):
     rdd = rdd.map(json.loads).map(clean_data)
     df = sqlContext.createDataFrame(rdd, schema)
 
-    return df
+    return rdd, df
 
 
