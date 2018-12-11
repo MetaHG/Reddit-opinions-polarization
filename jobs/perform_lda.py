@@ -66,6 +66,8 @@ if __name__ == "__main__":
     
     cleaned_preprocessed = condense_comm_and_preprocessing(comments_filtered, en_stop)
     
+    alpha_min =0.005
+    alpha_max =0.05
     #best values for alphas are n_topics value range [0.01-0.1] or [0.005-0.05]
     alphas = [0.05]*params['n_topics']
     #best value for beta is either 0.01 or 0.05
