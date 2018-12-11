@@ -106,20 +106,20 @@ def condense_comm_and_preprocessing(dataset, stop_words, use_pos_tagging=False):
     #keeping only what matters
     dataset = dataset.select('link_id', 'body', 'created')
     
-    zeroValue = ([], datetime.date(year=3016, month=12, day=30))
+    zeroValue = (list(), datetime.date(year=3016, month=12, day=30))
     combFun = lambda l, r: (l[0] + r[0], min(l[1], r[1]))
-    seqFun = lambda prev, curr: (prev[0] + curr[0], prev[1] if prev[1] < curr[1] else curr[1])
+    seqFun = lambda prev, curr: (prev[0] + [curr[0]], prev[1] if prev[1] < curr[1] else curr[1])
     
     #removing post that have been deleted/removed (thus hold no more information)
     filtered = dataset.filter(dataset.body != '[removed]').filter(dataset.body != '[deleted]').filter(dataset.body != '')
     
     #applying preprocessing at the text level, and filtering post with empty tokenization
-    filtered_rdd = filtered.rdd.map(lambda r: (r[0], (text_preprocessing(r[1],stop_words, use_pos_tagging), r[2]))).filter(lambda r: r[1][0])
+    #filtered_rdd = filtered.rdd.map(lambda r: (r[0], (text_preprocessing(r[1],stop_words, use_pos_tagging), r[2]))).filter(lambda r: r[1][0])
     
     #the consequence of the aggregateByKey and zipWithUniqueId makes it that we have tuples of tuples we need to flatten.
-    agg_res = filtered_rdd.aggregateByKey(zeroValue, seqFun, combFun)
+    agg_res = filtered.rdd.aggregateByKey(zeroValue, seqFun, combFun)
 
-    post_and_list_token = agg_res.map(lambda r: (r[0], r[1][0], r[1][1]))
+    post_and_list_token = agg_res.map(lambda r: (r[0], r[1][0], r[1][1])).map(lambda r: (r[0],text_preprocessing(r[1], stop_words, use_pos_tagging), r[2])).filter(lambda r: r[1])
     
     withUid = post_and_list_token.zipWithUniqueId().map(lambda r: (r[0][0], r[0][1], r[0][2], r[1]))
     
