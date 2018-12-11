@@ -42,7 +42,7 @@ if __name__ == "__main__":
     import lda
 
     params = {
-        'start_year': 2016,
+        'start_year': 2015,
         'start_month': 12,
         'start_day': 7,
         'end_year': 2016,

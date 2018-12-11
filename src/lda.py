@@ -13,7 +13,8 @@ def text_preprocessing(txt, stop_words, pos_tagging=False):
     All import of nltk 
     '''
 
-    #avoid error for wordnet import 
+    #avoid error for wordnet import
+    import nltk 
     nltk_data_str = "./nltk_data.zip/nltk_data"
     if not nltk_data_str in nltk.data.path:
         nltk.data.path.append(nltk_data_str)
@@ -94,7 +95,7 @@ def condense_comm_and_preprocessing(dataset, stop_words):
     return post_and_list_token.toDF().selectExpr("_1 as post_id", "_2 as text","_3 as created", "_4 as uid")
 '''
 
-def condense_comm_and_preprocessing(dataset, stop_words):
+def condense_comm_and_preprocessing(dataset, stop_words, use_pos_tagging=False):
     '''
     Function whose purpose is to condensate all comments
     of one post (identified by link_id) into one array per post 
@@ -113,7 +114,7 @@ def condense_comm_and_preprocessing(dataset, stop_words):
     filtered = dataset.filter(dataset.body != '[removed]').filter(dataset.body != '[deleted]').filter(dataset.body != '')
     
     #applying preprocessing at the text level, and filtering post with empty tokenization
-    filtered_rdd = filtered.rdd.map(lambda r: (r[0], (text_preprocessing(r[1],stop_words, True), r[2]))).filter(lambda r: r[1][0])
+    filtered_rdd = filtered.rdd.map(lambda r: (r[0], (text_preprocessing(r[1],stop_words, use_pos_tagging), r[2]))).filter(lambda r: r[1][0])
     
     #the consequence of the aggregateByKey and zipWithUniqueId makes it that we have tuples of tuples we need to flatten.
     agg_res = filtered_rdd.aggregateByKey(zeroValue, seqFun, combFun)
