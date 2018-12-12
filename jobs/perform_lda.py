@@ -43,11 +43,11 @@ if __name__ == "__main__":
 
     params = {
         'start_year': 2016,
-        'start_month': 12,
-        'start_day': 7,
+        'start_month': 11,
+        'start_day': 5,
         'end_year': 2016,
-        'end_month': 12,
-        'end_day': 8,
+        'end_month': 11,
+        'end_day': 7,
         'subreddit': 'news',
         'n_topics': 10,
         'n_words':4,
@@ -64,6 +64,8 @@ if __name__ == "__main__":
     end_date = datetime.date(year=params['end_year'], month=params['end_month'], day=params['end_day'])
     comments_filtered = comments.filter(comments.created > start_date).filter(comments.created < end_date).filter(comments.subreddit == params['subreddit'])
     
+    print "nmb of comm : "+str(comments_filtered.count())
+
     cleaned_preprocessed = condense_comm_and_preprocessing(comments_filtered, en_stop)
     
     #best value for beta is either 0.01 or 0.05
