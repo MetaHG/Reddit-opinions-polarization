@@ -7,7 +7,7 @@ fi
 
 archives=archives/nltk_data.zip
 eggs=eggs/nltk-3.4-py2.7.egg,eggs/six-1.11.0-py2.7.egg,eggs/textblob-0.15.2-py2.7.egg
-pyfiles=src/load.py,src/preprocess.py
+pyfiles=src/load.py,src/preprocess.py,src/nlp_utils.py
 
 spark-submit --master yarn --deploy-mode $1 --driver-memory 4G --num-executors 5 --executor-memory 4G --executor-cores 5 --py-files $pyfiles,$eggs --conf spark.yarn.appMasterEnv.NLTK_DATA=./nltk_data.zip/nltk_data --archives $archives $2
 
