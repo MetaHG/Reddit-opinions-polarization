@@ -53,14 +53,12 @@ if __name__ == "__main__":
     prev_date = datetime.date(year=2015, month=12, day=7)
     curr_date = datetime.date(year=2016, month=1, day=8)
     
-    alphas = [0.05]*10
-    beta = 0.01
-        
+    beta = 0.01    
     res = []
     i = 1
     while i < 12:
         month_comms = cleaned_preprocessed.filter(comments.created > prev_date).filter(comments.created < curr_date)
-        topics_w, _ = perform_lda(month_comms, 10, 4, alphas, beta, 'text')
+        topics_w, _ = perform_lda(month_comms, 10, 4,  beta, 'text')
         res.append((curr_date, topics_w))
         i += 1
         prev_date = curr_date

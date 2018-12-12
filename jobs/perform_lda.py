@@ -42,7 +42,7 @@ if __name__ == "__main__":
     import lda
 
     params = {
-        'start_year': 2015,
+        'start_year': 2016,
         'start_month': 12,
         'start_day': 7,
         'end_year': 2016,
@@ -66,14 +66,10 @@ if __name__ == "__main__":
     
     cleaned_preprocessed = condense_comm_and_preprocessing(comments_filtered, en_stop)
     
-    alpha_min =0.005
-    alpha_max =0.05
-    #best values for alphas are n_topics value range [0.01-0.1] or [0.005-0.05]
-    alphas = [0.05]*params['n_topics']
     #best value for beta is either 0.01 or 0.05
     beta = 0.01
 
-    topics_n_weight, topic_distribution = perform_lda(cleaned_preprocessed, params['n_topics'], params['n_words'],alphas, beta, 'text') 
+    topics_n_weight, topic_distribution = perform_lda(cleaned_preprocessed, params['n_topics'], params['n_words'], beta, 'text') 
 
     topics_n_weight.write.mode('overwrite').parquet(params['output_name']+'_topic_n_weight.parquet')
     topic_distribution.write.mode('overwrite').parquet(params['output_name']+'_topic_distribution.parquet')

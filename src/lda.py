@@ -20,6 +20,10 @@ def text_preprocessing(txt, stop_words, pos_tagging=False):
         nltk.data.path.append(nltk_data_str)
 
     def get_wordnet_pos(treebank_tag):
+        import nltk 
+        nltk_data_str = "./nltk_data.zip/nltk_data"
+        if not nltk_data_str in nltk.data.path:
+            nltk.data.path.append(nltk_data_str)
         from nltk.corpus import wordnet
         if treebank_tag.startswith('J'):
             return wordnet.ADJ
@@ -70,31 +74,6 @@ def text_preprocessing(txt, stop_words, pos_tagging=False):
         #get lemma of each word, then return result
         return [WordNetLemmatizer().lemmatize(word) for word, _ in wout_sw_w]
 
-'''
-def condense_comm_and_preprocessing(dataset, stop_words):
-
-    #keeping only what matters
-    dataset = dataset.select('link_id', 'body', 'created')
-    
-    zeroValue = ([], datetime.date(year=3016, month=12, day=30))
-    combFun = lambda l, r: (l[0] + r[0], min(l[1], r[1]))
-    seqFun = lambda prev, curr: (prev[0] + curr[0], prev[1] if prev[1] < curr[1] else curr[1])
-    
-    #removing post that have been deleted/removed (thus hold no more information)
-    filtered = dataset.filter(dataset.body != '[removed]').filter(dataset.body != '[deleted]').filter(dataset.body != '')
-    
-    #applying preprocessing at the text level, and filtering post with empty tokenization
-    filtered_rdd = filtered.rdd.map(lambda r: (r[0], (text_preprocessing(r[1],stop_words, True), r[2]))).filter(lambda r: r[1][0])
-    
-    #the consequence of the aggregateByKey and zipWithUniqueId makes it that we have tuples of tuples we need to flatten.
-    post_and_list_token = filtered_rdd.aggregateByKey(zeroValue, seqFun, combFun).zipWithUniqueId().map(lambda r: (r[0][0], r[0][1][0], r[0][1][1], r[1]))
-    
-    post_and_list_token = filtered_rdd.aggregateByKey(zeroValue, seqFun, combFun).zipWithUniqueId().map(lambda r: (r[0][0], r[0][1][0], r[0][1][1], r[1]))
-    
-
-    return post_and_list_token.toDF().selectExpr("_1 as post_id", "_2 as text","_3 as created", "_4 as uid")
-'''
-
 def condense_comm_and_preprocessing(dataset, stop_words, use_pos_tagging=False):
     '''
     Function whose purpose is to condensate all comments
@@ -106,26 +85,31 @@ def condense_comm_and_preprocessing(dataset, stop_words, use_pos_tagging=False):
     #keeping only what matters
     dataset = dataset.select('link_id', 'body', 'created')
     
-    zeroValue = (list(), datetime.date(year=3016, month=12, day=30))
-    combFun = lambda l, r: (l[0] + r[0], min(l[1], r[1]))
-    seqFun = lambda prev, curr: (prev[0] + [curr[0]], prev[1] if prev[1] < curr[1] else curr[1])
-    
+    #function to use with aggregateByKey
+    def zeroValue():
+        return ([], datetime.date(year=3016, month=12, day=30))
+    def combFun(l, r):
+        return (l[0] + r[0], min(l[1], r[1]))
+    def seqFun(prev, curr):
+        return (prev[0] + curr[0], prev[1] if prev[1] < curr[1] else curr[1])
+
     #removing post that have been deleted/removed (thus hold no more information)
     filtered = dataset.filter(dataset.body != '[removed]').filter(dataset.body != '[deleted]').filter(dataset.body != '')
-    
+
+    #removing short comments
+    big_comm = filtered.rdd.filter(lambda r: len(r[1]) > 50)
+
     #applying preprocessing at the text level, and filtering post with empty tokenization
-    #filtered_rdd = filtered.rdd.map(lambda r: (r[0], (text_preprocessing(r[1],stop_words, use_pos_tagging), r[2]))).filter(lambda r: r[1][0])
-    
+    filtered_rdd = big_comm.map(lambda r: (r[0], (text_preprocessing(r[1],stop_words, use_pos_tagging), r[2]))).filter(lambda r: r[1][0])
+
     #the consequence of the aggregateByKey and zipWithUniqueId makes it that we have tuples of tuples we need to flatten.
-    agg_res = filtered.rdd.aggregateByKey(zeroValue, seqFun, combFun)
+    post_and_list_token = filtered_rdd.aggregateByKey(zeroValue(), seqFun, combFun).zipWithUniqueId().map(lambda r: (r[0][0], r[0][1][0], r[0][1][1], r[1]))
 
-    post_and_list_token = agg_res.map(lambda r: (r[0], r[1][0], r[1][1])).map(lambda r: (r[0],text_preprocessing(r[1], stop_words, use_pos_tagging), r[2])).filter(lambda r: r[1])
-    
-    withUid = post_and_list_token.zipWithUniqueId().map(lambda r: (r[0][0], r[0][1], r[0][2], r[1]))
-    
-    return withUid.toDF().selectExpr("_1 as post_id", "_2 as text","_3 as created", "_4 as uid")
+    return post_and_list_token.toDF().selectExpr("_1 as post_id", "_2 as text","_3 as created", "_4 as uid")
 
-def perform_lda(documents, n_topics, n_words, alphas, beta, tokens_col):
+
+
+def perform_lda(documents, n_topics, n_words, beta, tokens_col):
     '''
     will perform LDA on a list of documents (== list of token)
     assume that documents is a DataFrame with a column of unique id (uid).
@@ -143,9 +127,7 @@ def perform_lda(documents, n_topics, n_words, alphas, beta, tokens_col):
     #keeping created for time series purpose. 
     corpus = result_tfidf.select("uid", "features", "created")
     
-    #defining and running the lda. Em is the best optimizer performance-wise.
-    #lda = LDA(k=n_topics, optimizer='em', docConcentration=alphas, topicConcentration=beta)
-    lda = LDA(k=n_topics, docConcentration=alphas, topicConcentration=beta)
+    lda = LDA(k=n_topics, topicConcentration=beta)
     
     model = lda.fit(corpus)
     
