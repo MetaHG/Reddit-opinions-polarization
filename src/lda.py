@@ -105,7 +105,7 @@ def condense_comm_and_preprocessing(dataset, stop_words, use_pos_tagging=False):
     #the consequence of the aggregateByKey and zipWithUniqueId makes it that we have tuples of tuples we need to flatten.
     post_and_list_token = filtered_rdd.aggregateByKey(zeroValue(), seqFun, combFun).zipWithUniqueId().map(lambda r: (r[0][0], r[0][1][0], r[0][1][1], r[1]))
 
-    return post_and_list_token.toDF().selectExpr("_1 as post_id", "_2 as text","_3 as created", "_4 as uid")
+    return post_and_list_token.toDF().selectExpr("_1 as post_id", "_2 as text","_3 as date", "_4 as uid")
 
 
 
@@ -125,7 +125,7 @@ def perform_lda(documents, n_topics, n_words, beta, tokens_col):
     result_tfidf = idfModel.transform(result_cv) 
     
     #keeping created for time series purpose. 
-    corpus = result_tfidf.select("uid", "features", "created")
+    corpus = result_tfidf.select("uid", "features", "date")
     
     lda = LDA(k=n_topics, topicConcentration=beta)
     
@@ -136,7 +136,7 @@ def perform_lda(documents, n_topics, n_words, beta, tokens_col):
     vocab = cvmodel.vocabulary
     
     #getting topic distribution per document. 
-    topic_distribution = model.transform(corpus)[['topicDistribution', 'created']]
+    topic_distribution = model.transform(corpus)[['topicDistribution', 'date']]
     
     #the topics are just numerical indices, we need to convert them to words, and associate them to their weights..
     topics_with_weights = topics.rdd.map(lambda r: (r[0], ([(vocab[t],w) for t,w in zip(r[1], r[2])]), ' '.join([vocab[t] for t in r[1]]))).toDF().selectExpr("_1 as topic_number", "_2 as topic_weight", "_3 as topic")

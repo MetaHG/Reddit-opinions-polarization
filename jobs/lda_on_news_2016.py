@@ -48,7 +48,7 @@ if __name__ == "__main__":
     end_date = datetime.date(year=2016, month=12, day=8)
     year_b4_election_news_comments = comments.filter(comments.created > start_date).filter(comments.created < end_date).filter(comments.subreddit == 'news')
     
-    cleaned_preprocessed = condense_comm_and_preprocessing(year_b4_election_news_comments, en_stop)
+    cleaned_preprocessed = condense_comm_and_preprocessing(year_b4_election_news_comments, en_stop).cache()
     
     prev_date = datetime.date(year=2015, month=12, day=7)
     curr_date = datetime.date(year=2016, month=1, day=8)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     res = []
     i = 1
     while i < 12:
-        month_comms = cleaned_preprocessed.filter(comments.created > prev_date).filter(comments.created < curr_date)
+        month_comms = cleaned_preprocessed.filter(comments.date > prev_date).filter(comments.date < curr_date)
         topics_w, _ = perform_lda(month_comms, 10, 4,  beta, 'text')
         res.append((curr_date, topics_w))
         i += 1
