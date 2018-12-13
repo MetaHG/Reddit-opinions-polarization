@@ -22,11 +22,11 @@
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="/assets/css/style.css?v=495b12981a837176d1d37b0f5f20b0a75390d000">
-    <link href="https://fonts.googleapis.com/css?family=Sorts+Mill+Goudy" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Sorts+Mill+Goudy" rel="stylesheet"> -->
     <script src="assets/js/plot_traffic.js"></script>
     <script src="assets/js/plot_top_subreddits.js"></script>
     <script src="plotly-latest.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:200,400,600,700,900" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:200,400,600,700,900" rel="stylesheet"> -->
 
   </head>
   <body>
@@ -57,13 +57,19 @@
         </div>
       </div>
 
-
       <h3>A Quick History of Reddit</h3>
 
-      <hr />
+      <a href="https://www.reddit.com">Reddit</a> is a massive public discussion.
+      Originally founed in June 2005, Reddit now contains more than 500 monthly active users and a total of over 3 billions comments.
+      According to a study published by Alexa Internet, reddit it the 3rd most visited website in the United States, and 6th worldwide.
+
+
+      <!-- <hr /> -->
+      <!-- <div class="plot-container"> -->
       <div id="plot-reddit-traffic" class="plot">
         <script> plot_traffic('plot-reddit-traffic') </script>
       </div>
+      <!-- </div> -->
       <hr />
 
       <h3>Communities</h3>
@@ -74,11 +80,24 @@
       <br />
       These communities are organized around very ..
       Below, one can find the top 10 subreddits in terms of total number of comments.
-      Even though that might not be representative of the entire set of comments (as there are a lot of smaller communities for more precise topics), it is interesting to note that 9 out of 10 communities in the top are either about politics or sports.
+      <!-- Even though that might not be representative of the entire set of comments (as there are a lot of smaller communities for more precise topics), it is interesting to note that 9 out of 10 communities in the top are either about politics or sports. -->
       <hr />
-      <div id="plot-top-subreddits" class="plot">
+
+      <div class="side-bar-anchor">
+        <div class="side-bar">
+          <!-- <h4>Note</h4> -->
+          Even though ..., it is interesting to note 9 out of the 10 the biggest communities are related to either politics (blue) or sports (orange).
+          This also highlights a potential bias in our data, as the set of Reddit users might not be representative of the general population in terms of interests or behaviors.
+        </div>
+      </div>
+
+      <div id="plot-top-subreddits" class="plot" style="height: 300px;">
         <script> plot_top_subreddits('plot-top-subreddits') </script>
       </div>
+      <div class="legend">
+        Top 10 subreddits in terms of all-time count of comments.
+      </div>
+
       <hr />
 
 <!-- - General Dataset information -->
@@ -93,7 +112,18 @@
       What is a sign that a particular topic is controversial?
       In this chapter, we will discuss several metrics that we decided to use in the following study, and motivate our choices.
 
-      <h3>Agreement Factor</h3>
+      <h4>Controversiality</h4>
+
+      For the well-versed redditors, an immediate candidate that comes to mind is Reddit's own controversiality flag.
+      Unfortunately, ...
+
+      <h4>Agreement Factor</h4>
+
+      One of the first metrics we decided to use was nicknamed the agreement factor.
+      It is defined as the number of comments to which the community has reacted positively divided by the total number of comments.
+      In order to avoid the noise, we impose a minimum threshold below which comments are not counted.
+
+
 
       - Attempts to use score
 
