@@ -1,5 +1,7 @@
 # Opinion Polarization on Reddit
 
+**Note for TA's - The notebook with Data Collection can be found at [notebooks/DataCollection.ipynb](https://github.com/MetaHG/Reddit-opinions-polarization/blob/master/notebooks/DataCollection.ipynb). This Readme was also updated with additional information.**
+
 ## Abstract
 
 In the recent months following the 2016 American election, many media outlets have argued about an increase in social divisiveness and the polarization of political opinions. The intensification of political debates as well as a growing inability to find common grounds are seen as direct consequences of this divide.
@@ -77,6 +79,24 @@ Above is a schematic description of the structure of the repository. As we need 
 * The _README.md_ file is the one you are currently reading.
 
 One last folder should get a mention even though it is absent from this repository, is the _data_ folder. This is where we store all the results from big computations that were done either on the cluster or locally but were too big to be kept on the github. This folder is syncronized between the team members using dropbox, and we don't put it on this repository due to its sheer size (more than 3GB).
+
+
+## Internal steps until Milestone 3
+* Refine list of subreddits to be analyzed based on existing metrics.
+
+* Focus on the subreddits where the agreement factor is the lowest. (i.e. video games, poltical/news and cities). Produce some basic metrics on them. Interpret those metrics according to the context (i.e. subject of the subreddit).
+
+* Run NLP on longer samples and/or subreddits chosen.
+
+* Trying other metrics to understand potential biases in the ones chosen previously.
+
+* Understand if [deleted] and [removed] are actually usable.
+
+* In-depth analysis of potential reasons for the jump in agreement observed around November 2016, observe if other metrics have similar behavior.
+
+* Study correlation between the different metrics.
+
+* Finally, using all the previous results and evidences, conclude by answering our research questions.
 
 ## Questions for TAs
 * How does the cluster schedule job? Sometimes we had to wait 1 hour for a job to be runned after being accepted, while other time this took only 20 seconds.
