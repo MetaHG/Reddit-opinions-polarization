@@ -37,7 +37,7 @@ def text_preprocessing(txt, stop_words, pos_tagging=False):
             #this is the default behaviour for lemmatize. 
             return wordnet.NOUN
 
-    remove_https = lambda s: re.sub(r'^https?:\/\/.*[\r\n]*', '', s)
+    remove_https = lambda s: re.sub(r'https?:\/\/.*[\r\n]*', '', s)
     
     #keeping only elements relevant to written speech.
     keep_only_letters = lambda s: re.sub('[^a-zA-Z \']+', '', s)
@@ -125,7 +125,7 @@ def perform_lda(documents, n_topics, n_words, beta, tokens_col):
     result_tfidf = idfModel.transform(result_cv) 
     
     #keeping created for time series purpose. 
-    corpus = result_tfidf.select("uid", "features", "date")
+    corpus = result_tfidf.select("uid", "features")#, "date")
     
     lda = LDA(k=n_topics, topicConcentration=beta)
     
@@ -136,9 +136,9 @@ def perform_lda(documents, n_topics, n_words, beta, tokens_col):
     vocab = cvmodel.vocabulary
     
     #getting topic distribution per document. 
-    topic_distribution = model.transform(corpus)[['topicDistribution', 'date']]
+    #topic_distribution = model.transform(corpus)[['topicDistribution', 'date']]
     
     #the topics are just numerical indices, we need to convert them to words, and associate them to their weights..
     topics_with_weights = topics.rdd.map(lambda r: (r[0], ([(vocab[t],w) for t,w in zip(r[1], r[2])]), ' '.join([vocab[t] for t in r[1]]))).toDF().selectExpr("_1 as topic_number", "_2 as topic_weight", "_3 as topic")
     
-    return topics_with_weights, topic_distribution
+    return topics_with_weights#, topic_distribution
