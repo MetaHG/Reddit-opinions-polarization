@@ -37,19 +37,9 @@ sc = spark.sparkContext
 
 # Import dependencies ZIP
 execfile("./__pyfiles__/load.py")
+execfile("./__pyfiles__/preprocess.py")
+execfile("./__pyfiles__/nlp_utils.py")
 
-###
-### Sentence polarity using NLTK
-###
-
-def compute_nltk_polarity(msg_body):
-    nltk.data.path.append("./nltk_data.zip/nltk_data")
-    sid = SentimentIntensityAnalyzer()
-    msg_body = sid.polarity_scores(msg_body)
-    return msg_body
-
-compute_nltk_polarity_udf = func.udf(compute_nltk_polarity, MapType(StringType(), FloatType(), False))
-spark.udf.register('compute_nltk_polarity', compute_nltk_polarity_udf)
 
 # Load and preprocess sample data
 _, messages = load_data(sc, sample=0.03)
@@ -64,24 +54,23 @@ messages = messages.filter(func.col('subreddit').isin(subreddits_set))
 # Clean messages
 cleaned_messages = messages.filter("body != '[removed]' and body != '[deleted]'")
 
-nlp_nltk_polartiy = cleaned_messages.selectExpr('subreddit', 'subreddit_id', 'creation_date', 'body', "compute_nltk_polarity(body) as nltk_scores")
-nlp_nltk_polartiy = nlp_nltk_polartiy.selectExpr('subreddit', 'subreddit_id', 'creation_date', 'nltk_scores.neg as nltk_negativity', 'nltk_scores.neu as nltk_neutrality', 'nltk_scores.pos as nltk_positivity')
+nlp_blob_metrics = cleaned_messages.selectExpr('subreddit', 'subreddit_id', 'creation_date', 'body', "compute_blob_polarity(body) as blob_scores")
+nlp_blob_metrics = nlp_blob_metrics.selectExpr('subreddit', 'subreddit_id', 'creation_date', 'blob_scores.polarity as text_blob_polarity', 'blob_scores.subjectivity as text_blob_subjectivity')
 
-nlp_nltk_polartiy.registerTempTable("nlp_nltk_metrics")
+nlp_blob_metrics.registerTempTable("nlp_blob_metrics")
 
-nltk_metrics = spark.sql("""
+blob_metrics = spark.sql("""
 SELECT
     subreddit,
     subreddit_id,
     MIN(creation_date) AS min_date,
     MAX(creation_date) AS max_date,
     COUNT(*) AS msg_count,
-    SUM(nltk_negativity) AS sum_nltk_neg,
-    SUM(nltk_neutrality) AS sum_nltk_neu,
-    SUM(nltk_positivity) AS sum_nltk_pos
-FROM nlp_nltk_metrics
+    SUM(text_blob_polarity) AS sum_blob_polarity,
+    SUM(text_blob_subjectivity) AS sum_blob_subjectivity
+FROM nlp_blob_metrics
 GROUP BY subreddit, subreddit_id
 """)
 
 
-nltk_metrics.write.mode('overwrite').parquet('nlp_nltk_subreddit_political_0.03.parquet')
+blob_metrics.write.mode('overwrite').parquet('nlp_blob_subreddit_political_0.03.parquet')
