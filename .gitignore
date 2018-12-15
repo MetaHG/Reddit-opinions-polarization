@@ -104,6 +104,7 @@ venv.bak/
 .ssh-config
 data/*
 archives/
+/docs/_site
 
 # Datasets
 *.zip

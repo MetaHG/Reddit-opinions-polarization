@@ -21,7 +21,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="/assets/css/style.css?v=495b12981a837176d1d37b0f5f20b0a75390d000">
+    <link rel="stylesheet" href="assets/css/main.css">
 
     <link href="https://fonts.googleapis.com/css?family=Sorts+Mill+Goudy" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:200,400,600,700,900" rel="stylesheet">
@@ -31,6 +31,7 @@
     <script src="assets/js/plot_traffic.js"></script>
     <script src="assets/js/plot_top_subreddits.js"></script>
     <script src="assets/js/plot_daily_agreement.js"></script>
+    <script src="assets/js/plot_subreddit_agreement.js"></script>
   </head>
   <body>
     <header class="page-header" role="banner">
@@ -44,14 +45,16 @@
 
     <main id="content" class="main-content" role="main">
 
-      <h2>Introducing the Data: Reddit Comments</h2>
+      <!-- <h3>Source</h3> -->
 
-      <h3>Source</h3>
+      <div class="subtext">
+        <b>Data Source: </b>The study you are about to read is based on a publicly available data set of comments people posted on Reddit.
+        It contains a total of N comments ranging from December 2005 to March 2017.
+        The data can be downloaded for free <a href="http://academictorrents.com/details/85a5bd50e4c365f8df70240ffd4ecc7dec59912b">here</a>.
+        It was kindly aggregated by Reddit user <a href=“https://www.reddit.com/user/Stuck_In_the_Matrix/”>/u/Stuck_In_the_Matrix</a> and more information can be found in <a href="https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/">a Reddit post</a> he wrote about it.
+      </div>
 
-      The study you are about to read is based on a publicly available data set of comments people posted on Reddit.
-      It contains a total of N comments ranging from December 2005 to March 2017.
-      The data can be downloaded for free <a href="http://academictorrents.com/details/85a5bd50e4c365f8df70240ffd4ecc7dec59912b">here</a>.
-      It was kindly aggregated by Reddit user <a href=“https://www.reddit.com/user/Stuck_In_the_Matrix/”>/u/Stuck_In_the_Matrix</a> and more information can be found in <a href="https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/">a Reddit post</a> he wrote about it.
+      <!-- <h2>A Quick History of Reddit</h2> -->
 
       <div class="side-bar-anchor">
         <div class="side-bar">
@@ -62,43 +65,37 @@
 
       <h3>A Quick History of Reddit</h3>
 
-      <a href="https://www.reddit.com">Reddit</a> is a massive public discussion.
-      Originally founed in June 2005, Reddit now contains more than 500 monthly active users and a total of over 3 billions comments.
-      According to a study published by Alexa Internet, reddit it the 3rd most visited website in the United States, and 6th worldwide.
+      <p>
+        <a href="https://www.reddit.com">Reddit</a> is a massive public discussion.
+        Originally founed in June 2005, Reddit now contains more than 500,000 monthly active users and a total of over 3 billions comments.
+        According to a study published by Alexa Internet, reddit it the 3rd most visited website in the United States, and 6th worldwide.
+      </p>
+      <p>
+        One of Reddit's particularities is its ad-hoc separation of discussions (or "threads") into specific communities (formally named "subreddits").
+        <!-- On Reddit, each one of the discussions (or "thread") is linked to a specific community (or "subreddit"). -->
+        Each subreddit is a forum of its own, with a specific set of rules and informal codes that members adhere to.
+        <!-- has its own set of rules and informal codes that most people adhere to and allow for a constructive and (mostly) civilized discussion. -->
+      </p>
+      <!-- <br />
+      <br />
+      These communities are organized around very ..
+      Below, one can find the top 10 subreddits in terms of total number of comments. -->
+      <!-- Even though that might not be representative of the entire set of comments (as there are a lot of smaller communities for more precise topics), it is interesting to note that 9 out of 10 communities in the top are either about politics or sports. -->
 
+      <hr />
+      <h4 style='text-align:center;'>High-Level Statistics</h4>
 
       <!-- <hr /> -->
       <!-- <div class="plot-container"> -->
-      <div id="plot-reddit-traffic" class="plot">
+      <div id="plot-reddit-traffic" class="sub-plot-left">
         <script> plot_traffic('plot-reddit-traffic') </script>
       </div>
-      <!-- </div> -->
-      <hr />
-
-      <h3>Communities</h3>
-
-      On Reddit, each one of the discussions (or "thread") is linked to a specific community (or "subreddit").
-      Each subreddit has its own set of rules and informal codes that most people adhere to and allow for a constructive and (mostly) civilized discussion.
-      <br />
-      <br />
-      These communities are organized around very ..
-      Below, one can find the top 10 subreddits in terms of total number of comments.
-      <!-- Even though that might not be representative of the entire set of comments (as there are a lot of smaller communities for more precise topics), it is interesting to note that 9 out of 10 communities in the top are either about politics or sports. -->
-      <hr />
-
-      <div class="side-bar-anchor">
-        <div class="side-bar">
-          <!-- <h4>Note</h4> -->
-          Even though ..., it is interesting to note 9 out of the 10 the biggest communities are related to either politics (blue) or sports (orange).
-          This also highlights a potential bias in our data, as the set of Reddit users might not be representative of the general population in terms of interests or behaviors.
-        </div>
-      </div>
-
-      <div id="plot-top-subreddits" class="plot" style="height: 300px;">
+      <div id="plot-top-subreddits" class="sub-plot-right">
         <script> plot_top_subreddits('plot-top-subreddits') </script>
       </div>
       <div class="legend">
-        Top 10 subreddits in terms of all-time count of comments.
+        Even though ..., it is interesting to note 9 out of the 10 the biggest communities are related to either politics (blue) or sports (orange).
+        This also highlights a potential bias in our data, as the set of Reddit users might not be representative of the general population in terms of interests or behaviors.
       </div>
 
       <hr />
@@ -106,7 +103,7 @@
 <!-- - General Dataset information -->
 <!-- - High-level metrics on reddit, etc.. -->
 
-      <h2>A Measure of Divisiveness</h2>
+      <h3>Measuring the Divide</h3>
 <!-- - Manually describe all the metrics we came up with -->
 <!-- - Analyze the correlation between these metrics at a high-level -->
 
@@ -126,7 +123,12 @@
       It is defined as the number of comments to which the community has reacted positively divided by the total number of comments.
       In order to avoid the noise, we impose a minimum threshold below which comments are not counted.
 
-
+      <div id="plot-subreddit-agreement" class="plot">
+        <script> plot_subreddit_agreement('plot-subreddit-agreement') </script>
+      </div>
+      <div class="legend">
+        Top 10 subreddits in terms of all-time count of comments.
+      </div>
 
       - Attempts to use score
 
