@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Reddit-opinions-polarization | ADA Project</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Reddit-opinions-polarization" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ADA Project" />
+<meta property="og:description" content="ADA Project" />
+<link rel="canonical" href="http://localhost:4000/" />
+<meta property="og:url" content="http://localhost:4000/" />
+<meta property="og:site_name" content="Reddit-opinions-polarization" />
+<script type="application/ld+json">
+{"name":"Reddit-opinions-polarization","description":"ADA Project","@type":"WebSite","url":"http://localhost:4000/","headline":"Reddit-opinions-polarization","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="assets/css/main.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Sorts+Mill+Goudy" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:200,400,600,700,900" rel="stylesheet">
+
+    <script src="plotly-latest.min.js"></script>
+
+    <script src="assets/js/plot_traffic.js"></script>
+    <script src="assets/js/plot_top_subreddits.js"></script>
+    <script src="assets/js/plot_daily_agreement.js"></script>
+    <script src="assets/js/plot_subreddit_agreement.js"></script>
+  </head>
+  <body>
+    <header class="page-header" role="banner">
+      <h1 class="project-name">The Polarization of Political Opinions on Reddit</h1>
+      <h2 class="project-tagline">An ADA story by Julien Perrenoud, Valentin Borgeaud and Cédric Viaccoz.</h2>
+
+        <!-- <a href="http://github.com/MetaHG/Reddit-opinions-polarization" class="btn">View on GitHub</a> -->
+
+
+    </header>
+
+    <main id="content" class="main-content" role="main">
+
+      <!-- <h3>Source</h3> -->
+
+      <div class="subtext">
+        <b>Data Source: </b>The study you are about to read is based on a publicly available data set of comments people posted on Reddit.
+        It contains a total of N comments ranging from December 2005 to March 2017.
+        The data can be downloaded for free <a href="http://academictorrents.com/details/85a5bd50e4c365f8df70240ffd4ecc7dec59912b">here</a>.
+        It was kindly aggregated by Reddit user <a href=“https://www.reddit.com/user/Stuck_In_the_Matrix/”>/u/Stuck_In_the_Matrix</a> and more information can be found in <a href="https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/">a Reddit post</a> he wrote about it.
+      </div>
+
+      <!-- <h2>A Quick History of Reddit</h2> -->
+
+      <div class="side-bar-anchor">
+        <div class="side-bar">
+          <h4>Reddit Fun Fact</h4>
+          At the time of this writing, Snoop Dogg has accumulated a respectable amount of 649,567 Karma points on Reddit under his username <a href=“https://www.reddit.com/user/Here_Comes_The_King/comments/”>/u/Here_Comes_The_King</a/>. His main contributions are on the subreddit <a href=“https://www.reddit.com/r/trees>/r/Trees</a>, which you can guess what kind of trees it refers to.
+        </div>
+      </div>
+
+      <h3>A Quick History of Reddit</h3>
+
+      <p>
+        <a href="https://www.reddit.com">Reddit</a> is a massive public discussion.
+        Originally founed in June 2005, Reddit now contains more than 500,000 monthly active users and a total of over 3 billions comments.
+        According to a study published by Alexa Internet, reddit it the 3rd most visited website in the United States, and 6th worldwide.
+      </p>
+      <p>
+        One of Reddit's particularities is its ad-hoc separation of discussions (or "threads") into specific communities (formally named "subreddits").
+        <!-- On Reddit, each one of the discussions (or "thread") is linked to a specific community (or "subreddit"). -->
+        Each subreddit is a forum of its own, with a specific set of rules and informal codes that members adhere to.
+        <!-- has its own set of rules and informal codes that most people adhere to and allow for a constructive and (mostly) civilized discussion. -->
+      </p>
+      <!-- <br />
+      <br />
+      These communities are organized around very ..
+      Below, one can find the top 10 subreddits in terms of total number of comments. -->
+      <!-- Even though that might not be representative of the entire set of comments (as there are a lot of smaller communities for more precise topics), it is interesting to note that 9 out of 10 communities in the top are either about politics or sports. -->
+
+      <hr />
+      <h4 style='text-align:center;'>High-Level Statistics</h4>
+
+      <!-- <hr /> -->
+      <!-- <div class="plot-container"> -->
+      <div id="plot-reddit-traffic" class="sub-plot-left">
+        <script> plot_traffic('plot-reddit-traffic') </script>
+      </div>
+      <div id="plot-top-subreddits" class="sub-plot-right">
+        <script> plot_top_subreddits('plot-top-subreddits') </script>
+      </div>
+      <div class="legend">
+        Even though ..., it is interesting to note 9 out of the 10 the biggest communities are related to either politics (blue) or sports (orange).
+        This also highlights a potential bias in our data, as the set of Reddit users might not be representative of the general population in terms of interests or behaviors.
+      </div>
+
+      <hr />
+
+<!-- - General Dataset information -->
+<!-- - High-level metrics on reddit, etc.. -->
+
+      <h3>Measuring the Divide</h3>
+<!-- - Manually describe all the metrics we came up with -->
+<!-- - Analyze the correlation between these metrics at a high-level -->
+
+      The initial part of our research was based around the notion of divisiveness itself.
+      Given the available data, how can we measure if a particular discussion is polarized or not?
+      What is a sign that a particular topic is controversial?
+      In this chapter, we will discuss several metrics that we decided to use in the following study, and motivate our choices.
+
+      <h4>Controversiality</h4>
+
+      For the well-versed redditors, an immediate candidate that comes to mind is Reddit's own controversiality flag.
+      Unfortunately, ...
+
+      <h4>Agreement Score</h4>
+
+      One of the first metrics we decided to use was nicknamed the "agreement score".
+      It is defined as the number of comments to which the community has reacted positively divided by the total number of comments.
+      In order to avoid the noise, we impose a minimum threshold below which comments are not counted.
+
+      <div id="plot-subreddit-agreement" class="plot">
+        <script> plot_subreddit_agreement('plot-subreddit-agreement') </script>
+      </div>
+      <div class="legend">
+        Top 10 subreddits in terms of all-time count of comments.
+      </div>
+
+      - Attempts to use score
+
+      <div class="side-bar-anchor">
+        <div class="side-bar">
+          <h4>Reddit Fun Fact</h4>
+          A negative score does not necessarily indicate a polarizing discussion.
+          On the blessed day of November 12, 2017, the entire Reddit community came together as a whole to mass down-vote a <a href="https://www.reddit.com/r/StarWarsBattlefront/comments/7cff0b/seriously_i_paid_80_to_have_vader_locked/dppum98/?context=3">reply from EA Community</a> to a user frustrated about their questionable revenue model on Star Wars Battlefront.
+          The comment currently has a score of -667,815 points, the lowest on the entire platform.
+        </div>
+      </div>
+
+      <h3>Natural Language Processing to the Rescue</h3>
+
+
+      - Positivity
+      - Negativity
+      - Neutrality
+
+      - Vulgarity
+      - Hate Speech
+
+      <h3>Correlations</h3>
+
+      <h3>Failed Attempts</h3>
+
+      - Deleted comments
+      - Gold
+      -
+
+      <h2>Polarization Over Time</h2>
+
+      One of the primary motivations of this study was to understand how the metrics
+      defined above evolved over time.
+      Indeed, it is fairly common nowadays to read how polarized our society has become.
+      This is often a general feeling, but there are not many studies attempting to actually back this claim with real data.
+
+
+
+
+      <hr />
+
+      <div id="plot-daily-agreement" class="plot">
+        <script> plot_daily_agreement('plot-daily-agreement') </script>
+      </div>
+      <div class="legend">
+        Top 10 subreddits in terms of all-time count of comments.
+      </div>
+
+      <hr />
+
+      <hr />
+<!-- EVOLUTION OF DIVISIVENESS -->
+<!-- - Plot how the metrics evolved over time -->
+<!-- - Try to find other supportive factors, draw conclusions -->
+
+      <h2>"No, you're the most polarized!"</h2>
+<!-- POLARIZED COMMUNITIES
+- Use the above metrics on specific communities (list of subreddits)
+- Extract most polarized communities, what kind of topics, etc..
+- Analyze correlation once again -->
+
+      <h2>Case Study: The 2016 American Election</h2>
+<!-- CASE STUDY: AMERICAN ELECTIONS 2016
+- Analyze for different groups of subreddits
+- Analyze per topic / issue
+- Analyze per candidate
+- Compare with 2012?
+- (If it works) LDA -->
+
+      <h2>Conclusions</h2>
+<!-- CONCLUSION -->
+
+
+      <footer class="site-footer">
+
+          <span class="site-footer-owner"><a href="http://github.com/MetaHG/Reddit-opinions-polarization">Reddit-opinions-polarization</a> is maintained by <a href="http://github.com/MetaHG">MetaHG</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+
+    <!-- <aside>Test</aside> -->
+  </body>
+</html>

@@ -104,3 +104,12 @@ venv.bak/
 .ssh-config
 data/*
 archives/
+/docs/_site
+
+# Datasets
+*.zip
+*.csv
+*.parquet
+*.rtf
+*_SUCCESS
+*.json
