@@ -312,7 +312,9 @@ a:hover { text-decoration: underline; }
 .main-content dl { padding: 0; }
 .main-content dl dt { padding: 0; margin-top: 1rem; font-size: 1rem; font-weight: bold; }
 .main-content dl dd { padding: 0; margin-bottom: 1rem; }
-.main-content hr { height: 2px; padding: 0; margin: 1rem 0; background-color: #eff0f1; border: 0; }
+.main-content hr { height: 1px; padding: 0; margin: 1rem 0; background-color: #eff0f1; border: 0; }
+
+.legend { text-align: center; }
 
 .site-footer { padding-top: 2rem; margin-top: 2rem; border-top: solid 1px #eff0f1; }
 @media screen and (min-width: 64em) { .site-footer { font-size: 1rem; } }

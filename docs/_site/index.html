@@ -22,12 +22,15 @@
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="/assets/css/style.css?v=495b12981a837176d1d37b0f5f20b0a75390d000">
+
     <link href="https://fonts.googleapis.com/css?family=Sorts+Mill+Goudy" rel="stylesheet">
-    <script src="assets/js/plot_traffic.js"></script>
-    <script src="assets/js/plot_top_subreddits.js"></script>
-    <script src="plotly-latest.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:200,400,600,700,900" rel="stylesheet">
 
+    <script src="plotly-latest.min.js"></script>
+
+    <script src="assets/js/plot_traffic.js"></script>
+    <script src="assets/js/plot_top_subreddits.js"></script>
+    <script src="assets/js/plot_daily_agreement.js"></script>
   </head>
   <body>
     <header class="page-header" role="banner">
@@ -48,7 +51,7 @@
       The study you are about to read is based on a publicly available data set of comments people posted on Reddit.
       It contains a total of N comments ranging from December 2005 to March 2017.
       The data can be downloaded for free <a href="http://academictorrents.com/details/85a5bd50e4c365f8df70240ffd4ecc7dec59912b">here</a>.
-      It was kindly aggregated by Reddit user /u/u/Stuck_In_the_Matrix and more information can be found in <a href="https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/">a Reddit post</a> he wrote about it.
+      It was kindly aggregated by Reddit user <a href=“https://www.reddit.com/user/Stuck_In_the_Matrix/”>/u/Stuck_In_the_Matrix</a> and more information can be found in <a href="https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/">a Reddit post</a> he wrote about it.
 
       <div class="side-bar-anchor">
         <div class="side-bar">
@@ -57,13 +60,19 @@
         </div>
       </div>
 
-
       <h3>A Quick History of Reddit</h3>
 
-      <hr />
+      <a href="https://www.reddit.com">Reddit</a> is a massive public discussion.
+      Originally founed in June 2005, Reddit now contains more than 500 monthly active users and a total of over 3 billions comments.
+      According to a study published by Alexa Internet, reddit it the 3rd most visited website in the United States, and 6th worldwide.
+
+
+      <!-- <hr /> -->
+      <!-- <div class="plot-container"> -->
       <div id="plot-reddit-traffic" class="plot">
         <script> plot_traffic('plot-reddit-traffic') </script>
       </div>
+      <!-- </div> -->
       <hr />
 
       <h3>Communities</h3>
@@ -74,26 +83,50 @@
       <br />
       These communities are organized around very ..
       Below, one can find the top 10 subreddits in terms of total number of comments.
-      Even though that might not be representative of the entire set of comments (as there are a lot of smaller communities for more precise topics), it is interesting to note that 9 out of 10 communities in the top are either about politics or sports.
+      <!-- Even though that might not be representative of the entire set of comments (as there are a lot of smaller communities for more precise topics), it is interesting to note that 9 out of 10 communities in the top are either about politics or sports. -->
       <hr />
-      <div id="plot-top-subreddits" class="plot">
+
+      <div class="side-bar-anchor">
+        <div class="side-bar">
+          <!-- <h4>Note</h4> -->
+          Even though ..., it is interesting to note 9 out of the 10 the biggest communities are related to either politics (blue) or sports (orange).
+          This also highlights a potential bias in our data, as the set of Reddit users might not be representative of the general population in terms of interests or behaviors.
+        </div>
+      </div>
+
+      <div id="plot-top-subreddits" class="plot" style="height: 300px;">
         <script> plot_top_subreddits('plot-top-subreddits') </script>
       </div>
+      <div class="legend">
+        Top 10 subreddits in terms of all-time count of comments.
+      </div>
+
       <hr />
 
 <!-- - General Dataset information -->
 <!-- - High-level metrics on reddit, etc.. -->
 
-      <h2>Measuring Polarization: What metrics to use?</h2>
+      <h2>A Measure of Divisiveness</h2>
 <!-- - Manually describe all the metrics we came up with -->
 <!-- - Analyze the correlation between these metrics at a high-level -->
 
-      Our initial research was based around the notion of divisiveness itself.
+      The initial part of our research was based around the notion of divisiveness itself.
       Given the available data, how can we measure if a particular discussion is polarized or not?
       What is a sign that a particular topic is controversial?
       In this chapter, we will discuss several metrics that we decided to use in the following study, and motivate our choices.
 
-      <h3>Agreement Factor</h3>
+      <h4>Controversiality</h4>
+
+      For the well-versed redditors, an immediate candidate that comes to mind is Reddit's own controversiality flag.
+      Unfortunately, ...
+
+      <h4>Agreement Score</h4>
+
+      One of the first metrics we decided to use was nicknamed the "agreement score".
+      It is defined as the number of comments to which the community has reacted positively divided by the total number of comments.
+      In order to avoid the noise, we impose a minimum threshold below which comments are not counted.
+
+
 
       - Attempts to use score
 
@@ -107,6 +140,7 @@
       </div>
 
       <h3>Natural Language Processing to the Rescue</h3>
+
 
       - Positivity
       - Negativity
@@ -130,6 +164,17 @@
       Indeed, it is fairly common nowadays to read how polarized our society has become.
       This is often a general feeling, but there are not many studies attempting to actually back this claim with real data.
 
+
+
+
+      <hr />
+
+      <div id="plot-daily-agreement" class="plot">
+        <script> plot_daily_agreement('plot-daily-agreement') </script>
+      </div>
+      <div class="legend">
+        Top 10 subreddits in terms of all-time count of comments.
+      </div>
 
       <hr />
 
