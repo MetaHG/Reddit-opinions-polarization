@@ -105,3 +105,11 @@ venv.bak/
 data/*
 archives/
 /docs/_site
+
+# Datasets
+*.zip
+*.csv
+*.parquet
+*.rtf
+*_SUCCESS
+*.json
