@@ -1,8 +1,11 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 
-def plot_metric_distrib(ax, metric, main_title, title, col):
-    metric.hist(col, bins=100, ax=ax)
+def plot_metric_distrib(ax, metric, main_title, title, col, val_to_discard=[]):
+    metric_tmp = metric
+    if (len(val_to_discard) != 0):
+        metric_tmp = metric_tmp[~metric_tmp[col].isin(val_to_discard)]
+    metric_tmp.hist(col, bins=100, ax=ax)
     ax.set_title(main_title + ' ' + title)
     ax.set_xlabel(title)
     ax.set_ylabel('frequency')
@@ -11,18 +14,25 @@ def plot_metric_distrib(ax, metric, main_title, title, col):
 def plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 30)):
     fig, axes = plt.subplots(nrows=len(plots), ncols=len(metrics_list), figsize=figsize)
     
-    for i, plot in enumerate(plots):
-        for j, metric in enumerate(metrics_list):
-            plot_metric_distrib(axes[i, j], metric, main_titles_list[j], *plot)
+    if(len(plots) == 1):
+        for i, metric in enumerate(metrics_list):
+            plot_metric_distrib(axes[i], metric, main_titles_list[i], *plots[0])
+    elif(len(metrics_list) == 1):
+        for i, plot in enumerate(plots):
+            plot_metric_distrib(axes[i], metrics_list[0], main_titles_list[0], *plot)
+    else:
+        for i, plot in enumerate(plots):
+            for j, metric in enumerate(metrics_list):
+                plot_metric_distrib(axes[i, j], metric, main_titles_list[j], *plot)
 
 
 def plot_corr_mat(ax, data, main_title, corr_name, opt_name=''):
     ax.matshow(data.corr())
     ax.set_title(main_title + ' ' + corr_name + ' ' + opt_name + 'correlation matrix')
+    ax.set_xticklabels(["s"] + list(data.columns.values), rotation=90)
+    ax.set_yticklabels(["s"] + list(data.columns.values))
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
-    ax.set_xticklabels(data.columns.values, rotation=90)
-    ax.set_yticklabels(data.columns.values)
     ax.xaxis.set_ticks_position('bottom')
 
 
@@ -87,7 +97,7 @@ def plot_subreddit_distrib(metrics_list, main_titles_list):
     plot_metrics_distrib(metrics_list, main_titles_list, plots)
 
 
-def plot_nlp_distrib(metrics_list, main_titles_list):
+def plot_nlp_daily_distrib(metrics_list, main_titles_list):
     plots = [
         ('negativity', 'neg'),
         ('neutrality', 'neu'),
@@ -97,7 +107,22 @@ def plot_nlp_distrib(metrics_list, main_titles_list):
         ('bad words', 'bw'),
         ('hate words', 'hw'),
         ('hate words refined', 'hw_ref'),
-        ('hate words refined intensity', 'intensity')
+        ('hate word refined intensity', 'intensity')
+    ]
+
+    plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 50))
+
+
+def plot_nlp_sample_distrib(metrics_list, main_titles_list):
+    plots = [
+        ('negativity', 'neg', [0]),
+        ('neutrality', 'neu', [1]),
+        ('positivity', 'pos', [0]),
+        ('polarity', 'pol', [0]),
+        ('subjectivity', 'subj', [0]),
+        ('bad words', 'bw', [0]),
+        ('hate words', 'hw', [0]),
+        ('hate words refined', 'hw_ref', [0])
     ]
 
     plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 50))
@@ -132,7 +157,7 @@ def plot_subreddit_metrics(metrics_list, titles_list):
     
     plot_metrics(metrics_list, titles_list, plots)
 
-def plot_nlp_metrics(metrics_list, titles_list):
+def plot_nlp_daily_metrics(metrics_list, titles_list):
     plots = [('negativity', 'positivity', 'neg', 'pos'),
             ('negativity', 'neutrality', 'neg', 'neu'),
             ('positivity', 'neutrality', 'pos', 'neu'),
