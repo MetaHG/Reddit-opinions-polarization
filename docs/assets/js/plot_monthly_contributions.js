@@ -1,7 +1,7 @@
 
-function plot_daily_agreement(elem) {
+function plot_monthly_contributions(elem) {
 
-  Plotly.d3.csv("assets/data/daily_agreement.csv", function(err, rows){
+  Plotly.d3.csv("assets/data/monthly_contributions.csv", function(err, rows){
 
     function unpack(rows, key) {
       return rows.map(function(row) { return row[key]; });
@@ -11,10 +11,10 @@ function plot_daily_agreement(elem) {
       type: "scatter",
       mode: "lines",
       // name: 'Daily Active Users (60d avg)',
-      x: unpack(rows, 'created'),
-      y: unpack(rows, 'daily_agreement_60d_avg'),
+      x: unpack(rows, 'date'),
+      y: unpack(rows, 'avg_nb_sub'),
       line: {
-        color: '#F6CA9B'
+        color: '#87A0CB'
       }
     }
 

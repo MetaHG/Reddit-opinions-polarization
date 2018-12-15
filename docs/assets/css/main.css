@@ -318,6 +318,10 @@ a:hover { text-decoration: underline; }
 .sub-plot-left { width: 50%; height: 300px; float: left; }
 .sub-plot-right { width: 50%; height: 300px; float: right; }
 
+.metric-left, .metric-right { height: 200px; }
+.metric-left .metric-distrib { height: 150px; width: 200px; background-color: blue; float: left; margin-right: 10px; }
+.metric-right .metric-distrib { height: 150px; width: 200px; background-color: blue; float: right; }
+
 .site-footer { padding-top: 2rem; margin-top: 2rem; border-top: solid 1px #eff0f1; }
 @media screen and (min-width: 64em) { .site-footer { font-size: 1rem; } }
 @media screen and (min-width: 42em) and (max-width: 64em) { .site-footer { font-size: 1rem; } }
