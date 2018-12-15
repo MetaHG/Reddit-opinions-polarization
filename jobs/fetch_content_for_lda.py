@@ -22,11 +22,10 @@ if __name__ == "__main__":
 
 	import load
 
-	_, df = load_data(sc, filter=[2016])
+	_, df = load_data(sc, filter=[2016, 2017])
 	df = df.withColumn('created', func.from_unixtime(df['created_utc'], 'yyyy-MM-dd HH:mm:ss.SS').cast(DateType()))
-	comments = df.select('link_id','body','created', 'subreddit')
+	comments = df.select('link_id','body','created', 'subreddit', 'score')
 	start_date = datetime.date(year=2016, month=1, day=7)
-	end_date = datetime.date(year=2016, month=12, day=8)
-	year_b4_election_news_comments = comments.filter(comments.subreddit == 'hillaryclinton').filter(comments.created > start_date).filter(comments.created < end_date)
+	year_b4_election_news_comments = comments.filter(comments.subreddit == 'hillaryclinton').filter(comments.created > start_date)
 	
-	year_b4_election_news_comments.write.mode('overwrite').parquet('hillary_comments.parquet')
+	year_b4_election_news_comments.write.mode('overwrite').parquet('hillary_comments_sept.parquet')
