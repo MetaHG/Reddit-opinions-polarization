@@ -38,7 +38,8 @@ function plot_top_subreddits(elem) {
 
     var layout = {
         autosize: true,
-        font: { size: 12 },
+        font: { size: 10 },
+        titlefont: { size: 12 },
         title: "Top 10 Most Active Subreddits",
         yaxis: {
             range: [ -0.5, 9.5 ],
@@ -57,11 +58,11 @@ function plot_top_subreddits(elem) {
         hovermode: "y",
         bargroupgap: 0.48,
         margin: {
-            pad: 10,
-            r: 120,
-            b: 40,
-            l: 120,
-            t: 40
+          pad: 10,
+          r: 0,
+          b: 40,
+          l: 80,
+          t: 20
         }
     }
 

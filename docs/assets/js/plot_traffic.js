@@ -1,4 +1,5 @@
 
+
 function plot_traffic(elem) {
 
   Plotly.d3.csv("assets/data/daily_traffic.csv", function(err, rows){
@@ -31,7 +32,16 @@ function plot_traffic(elem) {
     var data = [trace1];
 
     var layout = {
-      title: 'Daily Traffic on Reddit',
+      font: { size: 10 },
+      titlefont: { size: 12 },
+      title: 'Daily Comments Posted on Reddit',
+      "margin": {
+          pad: 10,
+          r: 40,
+          b: 40,
+          l: 40,
+          t: 20
+      }
     };
 
     Plotly.newPlot(elem, data, layout, {responsive: true});
