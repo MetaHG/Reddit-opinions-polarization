@@ -25,6 +25,8 @@ Through an analysis of the wide range of political and social discussions availa
 - What are personal characteristics of individuals with very polarized opinions?
 - Could we infer some reasons and consequences of this division based on the data?
 
+*Note - Answers to these questions can be found at the end of DataCollection.ipynb*
+
 ## Dataset
 
 Our main dataset will be the [Reddit dataset](http://academictorrents.com/details/85a5bd50e4c365f8df70240ffd4ecc7dec59912b) containing comments from December 2005 to March 2017. Additional description can be found [here](https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/). The main reasons why we decided to go with Reddit instead of another social media platform (e.g. Twitter) are the following.
