@@ -116,7 +116,7 @@ One last folder should get a mention even though it is absent from this reposito
 
 During the scope of this project, we generated a big amount of derivative data from the dataset. Because of the sheer size of information, we often had to store this data in parquets. Concretely, it means that if someone wants to re-run the notebook and still get the results that are displayed (in order to verify the results, for instance), one will have to download the needed parquet files.
 
-For practical, synchronization purposes, we decided to host all the parquet files on Dropbox. One can download each of them by using the following (link)[ddd]. Moreover, below is a list of all parquets used and how they were generated.
+For practical, synchronization purposes, we decided to host all the parquet files on Dropbox. One can download each of them by using the following [link](https://www.dropbox.com/sh/8b8j0k4g0rtr9g1/AADHYwW_ekdEIjDRFA122PXsa?dl=0). Moreover, below is a list of all parquets used and how they were generated.
 
 * `2016_news_comment.parquet` - 
 * `agreement_per_community.parquet` - This was generated via the `subreddit_nlp_full_0.001` and the list of subreddits (meta-category) in `data/subreddits`
