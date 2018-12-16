@@ -3,13 +3,7 @@ function plot_category_metric(metric) {
 
   Plotly.d3.csv("assets/data/category_metrics.csv", function(err, category_metrics){
 
-    console.log("Error 1:")
-    console.log(err)
-
     Plotly.d3.csv("assets/data/nlp_metrics_distrib.csv", function(err, metrics_distrib){
-
-      console.log("Error 2:")
-      console.log(err)
 
       function unpack(rows, key) {
         return rows.map(function(row) { return row[key]; });
