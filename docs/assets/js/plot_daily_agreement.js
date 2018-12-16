@@ -18,23 +18,13 @@ function plot_daily_agreement(elem) {
       }
     }
 
-    // var trace2 = {
-    //   type: "scatter",
-    //   mode: "lines",
-    //   name: 'Daily Comments (60d avg)',
-    //   x: unpack(rows, 'created'),
-    //   y: unpack(rows, 'count_of_comments_60d_avg'),
-    //   line: {color: '#7F7F7F'}
-    // }
-
-    // var data = [trace1,trace2];
     var data = [trace1];
 
     var layout = {
         autosize: true,
-        // font: { size: 12 },
-        // title: "Top 10 Most Active Subreddits",
-        hovermode: "y",
+        titlefont: { size: 10 },
+        title: "Daily Agreement (All communities)",
+        hovermode: "x",
         bargroupgap: 0.48,
         margin: {
           pad: 10,

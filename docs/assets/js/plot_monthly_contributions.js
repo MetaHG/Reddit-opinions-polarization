@@ -33,8 +33,9 @@ function plot_monthly_contributions(elem) {
     var layout = {
         autosize: true,
         // font: { size: 12 },
-        // title: "Top 10 Most Active Subreddits",
-        hovermode: "y",
+        titlefont: { size: 10 },
+        title: "Monthly Active Subreddits per User",
+        hovermode: "x",
         bargroupgap: 0.48,
         margin: {
           pad: 10,

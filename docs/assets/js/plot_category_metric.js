@@ -7,8 +7,6 @@ function plot_category_metric(metric) {
       return rows.map(function(row) { return row[key]; });
     }
 
-    // var
-
     var data = [
         {
             "orientation": "v",
