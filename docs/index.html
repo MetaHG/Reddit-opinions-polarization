@@ -50,7 +50,8 @@
 
       <!-- <h3>Source</h3> -->
 
-      EPFL - December 15, 2018
+      December 15, 2018 - EPFL, Lausanne
+      <br />
 
       <hr />
       <p class="subtext">
@@ -81,25 +82,36 @@
       <h3>A Quick History of Reddit</h3>
 
       <p>
-        <a href="https://www.reddit.com">Reddit</a> is a massive public discussion.
+        <a href="https://www.reddit.com">Reddit</a> is an American discussion and social news platform where content is created, shared and ranked by the community.
         Originally founed in June 2005, Reddit now contains more than 500,000 monthly active users and a total of over 3 billions comments.
         According to a study published by Alexa Internet, reddit it the 3rd most visited website in the United States, and 6th worldwide.
       </p>
       <p>
-        One of Reddit's particularities is its ad-hoc separation of discussions (or "threads") into specific communities (formally named "subreddits").
-        <!-- On Reddit, each one of the discussions (or "thread") is linked to a specific community (or "subreddit"). -->
+        We highlight two main specificities of Reddit relevant to this study.
+        First, the website uses explicit user feedback to evaluate and rank its content.
+        This feedback is in the form of a vote ("upvote" for positive and "downvote" for negative) that any user can perform on any post or comment.
+        These votes are then aggregated into a single "score" metric, which measures the difference between upvotes and downvotes.
+      </p>
+      <hr/>
+      <p class="subtext">
+        <b>Fun Fact</b> - A negative score does not necessarily indicate a polarizing discussion.
+        On the blessed day of November 12, 2017, the entire Reddit community came together as a whole to mass down-vote a <a href="https://www.reddit.com/r/StarWarsBattlefront/comments/7cff0b/seriously_i_paid_80_to_have_vader_locked/dppum98/?context=3">reply from EA Community</a> to a user frustrated about their questionable revenue model on Star Wars Battlefront.
+        At the time of this writing, the comment has a score of -667,815 points, the lowest on the entire platform.
+      </p>
+      <hr/>
+      <p>
+        Secondly, Reddit imposes a clear ad-hoc separation of its content into disjoint communities (formally named "subreddits").
         Each subreddit is a forum of its own, with a specific set of rules and informal codes that members adhere to.
-        <!-- has its own set of rules and informal codes that most people adhere to and allow for a constructive and (mostly) civilized discussion. -->
+        They vary from very large communities discussing a broad range of subjects (for instance /r/politics) to smaller niche groups centered around a very specific topic. (e.g. ...).
       </p>
       <!-- <br />
       <br />
       These communities are organized around very ..
       Below, one can find the top 10 subreddits in terms of total number of comments. -->
       <!-- Even though that might not be representative of the entire set of comments (as there are a lot of smaller communities for more precise topics), it is interesting to note that 9 out of 10 communities in the top are either about politics or sports. -->
-
-      <hr />
+      <hr/>
       <h4 style='text-align:center;'>High-Level Statistics</h4>
-
+      <br/>
       <!-- <hr /> -->
       <!-- <div class="plot-container"> -->
       <div id="plot-reddit-traffic" class="sub-plot-left">
@@ -116,35 +128,23 @@
       <hr />
 
       <p>
-        It is interesting to see that 9 out of the 10 the biggest Reddit communities are related to either politics or sports.
+        In the chart above, it is already interesting to note that 9 out of the 10 the biggest Reddit communities are related to either politics or sports.
         This highlights a potential bias in our data, as the set of Reddit users might not be representative of the general population in terms of interests or behaviors.
         <!-- The reader will have to keep this in mind throughout the rest of this article. -->
       </p>
 
-      <p>
-        Another important factor to keep in mind is the way that content is scored on Reddit.
-        Like many other forums and social medias platforms, Reddit uses direct user feedback to evaluate and rank posts and comments.
-        The system is fairly simple, each user can "upvote" content they like and "downvote" what they do not like.
-      </p>
+      <h3>Finding the Right Metric</h3>
 
-      <hr/>
-        <p class="subtext">
-          <b>Fun Fact</b> - A negative score does not necessarily indicate a polarizing discussion.
-          On the blessed day of November 12, 2017, the entire Reddit community came together as a whole to mass down-vote a <a href="https://www.reddit.com/r/StarWarsBattlefront/comments/7cff0b/seriously_i_paid_80_to_have_vader_locked/dppum98/?context=3">reply from EA Community</a> to a user frustrated about their questionable revenue model on Star Wars Battlefront.
-          The comment currently has a score of -667,815 points, the lowest on the entire platform.
-        </p>
-      <hr/>
-<!-- - General Dataset information -->
-<!-- - High-level metrics on reddit, etc.. -->
-
-      <h3>Measuring the Divide</h3>
-<!-- - Manually describe all the metrics we came up with -->
-<!-- - Analyze the correlation between these metrics at a high-level -->
       <p>
         The initial part of our research was based around the notion of divisiveness itself.
         Given the available data, how can we measure if a particular discussion is polarized or not?
-        What is a sign that a particular topic is controversial?
-        In this chapter, we will discuss several metrics that we decided to use in the following study, and motivate our choices.
+        What is a sign that a topic is controversial?
+      </p><p>
+        In fact, we quickly realized that polarization itself is a complex, multi-faceted notion.
+        In order to capture it properly, we decided to keep 4 metrics, each measuring a different aspect or consequence of divisiveness.
+        For each metric, we present its distribution over the dataset and its average over 4 meta-categories of subreddits (compiled with the help of <a href="https://www.reddit.com/r/ListOfSubreddits">/r/ListOfSubreddits</a>).
+        <!-- After some thought, we decided to keep the following metrics, which measure different aspects of polarization.
+        In this chapter, we will discuss several metrics that we decided to use in the following study, and motivate our choices. -->
       </p>
 
       <hr/>
@@ -180,49 +180,16 @@
       </div>
       <hr/>
 
+      In the plot on the right, we already notice that politics seems to be the most polarizing category.
+      It simultaneously exhibits the lowest level agreement and positivity while having the highest negativity and vulgarity.
+
       <script> plot_category_metric('agreement') </script>
-      <!-- <br />
 
-       <div class="metric-left">
-
-        <div class="subtext">
-          <h4>Agreement Score</h4>
-          Our first metric aims to measure the extent to which people participating in a discussion are in agreement with each other.
-          Its calculation is fairly simple as it corresponds to the percentage of comments with a positive score.
-          </div>
-      </div> -->
-
-      <!-- <div class="metric-left">
-
-        <div class="subtext">
-          <h4>Positivity</h4>
-          Next, we aimed to measure how positive each one of the available comments are.
-          In order to do this, we used a dataset of NLTK positive words that we matched against the content of each comment.
-        </div>
-      </div> -->
-
-      <!-- <div class="metric-left">
-
-        <div class="subtext">
-          <h4>Negativity</h4>
-          Similarly to the positivity metric, we defined a negativity metric using another dataset provided by NLTK.
-          Note that in certain cases it makes sense to combine these two metrics, which is referred below as "Polarity".
-          </div>
-      </div> -->
-
-      <!-- <div class="metric-left">
-
-        <div class="subtext">
-          <h4>Vulgarity</h4>
-          Finally, we also matched each comment against a database of known insults and hate words in order to get a measure of vulgarity.
-          It is to be noted that this metric does not take into account the intensity of an insult.
-        </div>
-      </div>  -->
+      <h3>A Look at Communities</h3>
 
       <p>
         With all our metrics properly defined, we are now fully equipped to explore the dataset.
         In particular, let's first have a look at how the different communities of Reddit compare with regards to agreement and positivity.
-        <!-- Looking at the agreement score, something already stands out. -->
       </p>
 
       <p>
@@ -232,31 +199,15 @@
         In the first scenario, this community truly is always in constant agreement, such that only very few comments ever disagree with the general opinion.
         Or, such comments do exist but are systematically removed by the moderation team.
         Either way, this result points towards a general feeling that Redditors visiting this community might have experienced: The_Donald is a big echo chamber.
-        <!-- This already hints at an interesting hypothesis: -->
-        <!-- A high agreement factor might be indicative of communities which have become big echo chambers. -->
-        <!-- A clear lack of indicates that this community either always agrees with everything that users post, or those comments are deleted by the moderation team. -->
-        <!-- Either -->
-        <!-- Because of the internal structure and visibility mechanisms of Reddit, -->
-        <!-- There are two main questions we tried to answer here. -->
-        <!-- First of all, what are the characteristics of -->
       </p>
 
-      <!--
-      For the well-versed redditors, an immediate candidate that comes to mind is Reddit's own controversiality flag.
-      Unfortunately, ...
-
-      <h4>Agreement Score</h4>
-
-      One of the first metrics we decided to use was nicknamed the "agreement score".
-      It is defined as the number of comments to which the community has reacted positively divided by the total number of comments.
-      In order to avoid the noise, we impose a minimum threshold below which comments are not counted. -->
       <hr />
       <h4 style='text-align:center;'>Positivity Versus Agreement Score</h4>
       <div id="plot-subreddit-agreement" class="plot">
         <script> plot_subreddit_agreement('plot-subreddit-agreement') </script>
       </div>
       <div class="legend">
-        <!-- The plot above shows the <b>agreement score</b> and <b>positivity</b> of each of our top 50 subreddits. -->
+        <!-- The plot above shows the agreement score and positivity of the top 50 biggest subreddits. -->
         <!-- First, we notice that there is no clear correlation between the two metrics. -->
         <!-- The most -->
         <!-- In the plot above, one can see that there is not clear correlation between -->
@@ -276,10 +227,13 @@
         On the other side of the plot, we notice that <a href="https://reddit.com/r/aww">/r/aww</a> and <a href="https://reddit.com/r/trees">/r/trees</a> are featured as the most wholesome communities.
         This is not surprising.
         Indeed, the first one is a community dedicated to posting cute pictures of animals.
-        The later is a subreddit reserved to regular users of a special kind of "tree".
-        (Hint - Snoop Dogg used to be a big contributor of this community, accumulating a respectable amount of 649,567 Reddit Karma points on his main account <a href=“https://www.reddit.com/user/Here_Comes_The_King/”>/u/Here_Comes_The_King</a/>)
+        The later is a subreddit reserved to regular users of a special kind of "tree", which we leave it to the user to figure out by themselves.
       </p>
-
+      <hr/>
+      <div class="subtext">
+        <b>Hint</b> - Snoop Dogg used to be a big contributor of <a href="https://reddit.com/r/trees">/r/trees</a>, accumulating a respectable amount of 649,567 Reddit Karma points on his main account <a href="https://www.reddit.com/user/Here_Comes_The_King/">/u/Here_Comes_The_King</a/>
+      </div>
+      <hr/>
 
       <!-- - Attempts to use score -->
 
@@ -300,7 +254,7 @@
       - Gold
       - -->
 
-      <h3>Polarization Over Time</h3>
+      <h3>Evolution of the Divide</h3>
 
       <p>
         Another one of our motivations in this study was to understand how the metrics defined above evolved over time.
@@ -318,7 +272,7 @@
       </p>
 
       <hr />
-      <h4 style='text-align:center;'>Evolution of Polarization</h4>
+      <!-- <h4 style='text-align:center;'>Evolution of Polarization</h4> -->
       <div id="plot-daily-agreement" class="sub-plot-left">
         <script> plot_daily_agreement('plot-daily-agreement') </script>
       </div>
@@ -348,7 +302,7 @@
 
       <!-- <hr /> -->
 
-
+      <h3>Conclusions</h3>
 
 <!-- EVOLUTION OF DIVISIVENESS -->
 <!-- - Plot how the metrics evolved over time -->

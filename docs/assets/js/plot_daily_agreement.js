@@ -45,6 +45,6 @@ function plot_daily_agreement(elem) {
         }
     };
 
-    Plotly.newPlot(elem, data, layout, {responsive: true});
+    Plotly.newPlot(elem, data, layout, {responsive: true, displayModeBar: false});
   })
 }

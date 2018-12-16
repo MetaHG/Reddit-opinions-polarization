@@ -44,6 +44,6 @@ function plot_traffic(elem) {
       }
     };
 
-    Plotly.newPlot(elem, data, layout, {responsive: true});
+    Plotly.newPlot(elem, data, layout, {responsive: true, displayModeBar: false});
   })
 }

@@ -45,6 +45,6 @@ function plot_monthly_contributions(elem) {
         }
     };
 
-    Plotly.newPlot(elem, data, layout, {responsive: true});
+    Plotly.newPlot(elem, data, layout, {responsive: true, displayModeBar: false});
   })
 }

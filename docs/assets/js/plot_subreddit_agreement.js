@@ -78,7 +78,7 @@ function plot_subreddit_agreement(elem) {
           "mode": "markers+text"
       }]
 
-      Plotly.newPlot(elem, data, layout, {responsive: true});
+      Plotly.newPlot(elem, data, layout, {responsive: true, displayModeBar: false});
     });
   });
 }

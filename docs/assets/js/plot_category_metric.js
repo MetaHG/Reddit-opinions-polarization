@@ -1,7 +1,7 @@
 
 function plot_category_metric(metric) {
 
-  Plotly.d3.csv("assets/data/daily_agreement.csv", function(err, rows){
+  Plotly.d3.csv("assets/data/category_metrics.csv", function(err, rows){
 
     function unpack(rows, key) {
       return rows.map(function(row) { return row[key]; });
@@ -79,18 +79,8 @@ function plot_category_metric(metric) {
                 "cmax": 5
             },
             "mode": "markers",
-            "y": [
-                "0.14",
-                "0.15",
-                "0.16",
-                "0.11"
-            ],
-            "x": [
-                "Sports",
-                "Video Games",
-                "Music",
-                "Politics"
-            ],
+            "y": unpack(rows, metric),
+            "x": unpack(rows, 'Group'),
             "type": "bar"
         }
     ];

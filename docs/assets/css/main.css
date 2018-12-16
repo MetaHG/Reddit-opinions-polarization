@@ -331,27 +331,12 @@ a:hover { text-decoration: underline; }
 
 .site-footer-credits { color: #819198; }
 
-ul.horizontal-list {
-  padding: 0pt;
-  display: table;
-  width: 100%;
-  list-style: none;
-}
-ul.horizontal-list li {
-  display: table-cell;
-  text-align: center;
-}
+ul.horizontal-list { padding: 0pt; display: table; width: 100%; list-style: none; }
+ul.horizontal-list li { display: table-cell; text-align: center; }
+ul.horizontal-list li a { display: block; }
+li.horizontal-item-select a { text-decoration: underline; font-weight: bold; }
 
-ul.horizontal-list li a {
-  display: block;
-}
-
-li.horizontal-item-select a {
-  text-decoration: underline;
-  font-weight: bold;
-  /* color: black; */
-}
-
+#metric-description { height: 4rem; }
 /* ul.horizontal-list li:first-child {
     text-align: left;
 }
