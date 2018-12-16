@@ -7,8 +7,6 @@ function plot_top_subreddits(elem) {
       return rows.map(function(row) { return row[key]; });
     }
 
-    console.log(unpack(rows, 'subreddit'))
-
     var data = [{
       type: "bar",
       mode: "lines",
@@ -40,35 +38,34 @@ function plot_top_subreddits(elem) {
 
     var layout = {
         autosize: true,
-        font: { size: 12 },
+        font: { size: 10 },
+        titlefont: { size: 12 },
         title: "Top 10 Most Active Subreddits",
         yaxis: {
             range: [ -0.5, 9.5 ],
             type: "category",
             autorange: true,
-            title: "Subreddit",
+            // title: "Subreddit",
             fixedrange: true
         },
         xaxis: {
             range: [ 0, 2269276.8421052634 ],
             type: "linear",
             autorange: true,
-            title: "Total Count of Messages",
+            // title: "Total Count of Messages",
             fixedrange: true
         },
         hovermode: "y",
         bargroupgap: 0.48,
         margin: {
-            pad: 10,
-            r: 120,
-            b: 80,
-            l: 120
+          pad: 10,
+          r: 0,
+          b: 40,
+          l: 80,
+          t: 20
         }
     }
 
-    Plotly.plot(elem, {
-      data: data,
-      layout: layout,
-    });
+    Plotly.plot(elem, data, layout, {responsive: true, displayModeBar: false});
   });
 }

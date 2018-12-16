@@ -104,10 +104,15 @@ venv.bak/
 .ssh-config
 data/*
 archives/
+/docs/_site
 
 # Datasets
 *.zip
-*.csv
+data/*.csv
+sample_csvs
+hatespeech_lexicon
+bad_words_lexicon
+lexicons
 *.parquet
 *.rtf
 *_SUCCESS

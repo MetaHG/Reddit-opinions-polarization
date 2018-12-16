@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Reddit-opinions-polarization | ADA Project</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Reddit-opinions-polarization" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ADA Project" />
+<meta property="og:description" content="ADA Project" />
+<link rel="canonical" href="http://localhost:4000/" />
+<meta property="og:url" content="http://localhost:4000/" />
+<meta property="og:site_name" content="Reddit-opinions-polarization" />
+<script type="application/ld+json">
+{"name":"Reddit-opinions-polarization","description":"ADA Project","@type":"WebSite","url":"http://localhost:4000/","headline":"Reddit-opinions-polarization","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="assets/css/main.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Sorts+Mill+Goudy" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:200,400,600,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+
+
+    <script src="plotly-latest.min.js"></script>
+
+    <script src="assets/js/plot_traffic.js"></script>
+    <script src="assets/js/plot_top_subreddits.js"></script>
+    <script src="assets/js/plot_daily_agreement.js"></script>
+    <script src="assets/js/plot_subreddit_agreement.js"></script>
+    <script src="assets/js/plot_monthly_contributions.js"></script>
+    <script src="assets/js/plot_category_metric.js"></script>
+    <script src="assets/js/plot_daily_nlp.js"></script>
+    <script src="assets/js/plot_metric_distrib.js"></script>
+  </head>
+  <body>
+    <header class="page-header" role="banner">
+      <img src="http://www.doomsteaddiner.net/blog/wp-content/uploads/2015/10/reddit-logo.png" width="100px"/>
+      <h1 class="project-name">The Polarization of Opinions on Reddit</h1>
+      <h2 class="project-tagline">An ADA story by Julien Perrenoud, Valentin Borgeaud and Cédric Viaccoz.</h2>
+
+        <!-- <a href="http://github.com/MetaHG/Reddit-opinions-polarization" class="btn">View on GitHub</a> -->
+
+
+    </header>
+
+    <main id="content" class="main-content" role="main">
+
+      December 15, 2018 - EPFL, Lausanne
+      <br />
+
+      <hr />
+      <p class="subtext">
+        In the months following the 2016 American election, many media outlets have reported an increase in social divisiveness and the polarization of political opinions.
+        Many of these organizations point at modern social media as a potential cause of this polarization.
+        <!-- The intensification of political debates as well as a growing inability to find common grounds are seen as direct consequences of this divide. -->
+        <!-- Many of these organizations point at modern social media as a potential cause of this polarization. -->
+        <!-- Their inherent filter bubbles and a promotion of extreme opinions create fertile ground for disrespectful debate. -->
+        Through an analysis of the wide range of political and social discussions available on Reddit, we seek here to measure and analyze how this polarization of opinions has evolved over time in order to confirm or disprove this hypothesis.
+      </p>
+      <hr />
+
+      <!-- <h2>A Quick History of Reddit</h2> -->
+
+      <!-- <div class="side-bar-anchor">
+        <div class="side-bar">
+          <h4>Reddit Fun Fact</h4>
+          At the time of this writing, Snoop Dogg has accumulated a respectable amount of 649,567 Karma points on Reddit under his username <a href=“https://www.reddit.com/user/Here_Comes_The_King/comments/”>/u/Here_Comes_The_King</a/>. His main contributions are on the subreddit <a href=“https://www.reddit.com/r/trees>/r/Trees</a>, which you can guess what kind of trees it refers to.
+        </div>
+      </div> -->
+
+      <h3>A Quick History of Reddit</h3>
+
+      <p>
+        <a href="https://www.reddit.com">Reddit</a> is an American discussion and social news platform where content is created, shared and ranked by the community.
+        Originally founed in June 2005, Reddit now contains more than 500,000 monthly active users and a total of over 3 billions comments.
+        According to a study published by Alexa Internet, reddit it the 3rd most visited website in the United States, and 6th worldwide.
+      </p>
+      <p>
+        We highlight two main specificities of Reddit relevant to this study.
+        First, the website uses explicit user feedback to evaluate and rank its content.
+        This feedback is in the form of a vote (<b>upvote</b> for positive and <b>downvote</b> for negative) that any user can perform on any post or comment.
+        These votes are then aggregated into a single <b>score</b> metric, which measures the difference between upvotes and downvotes.
+      </p>
+      <hr/>
+      <p class="subtext">
+        <b>Fun Fact</b> - A negative score does not necessarily indicate a polarizing discussion.
+        On the blessed day of November 12, 2017, the entire Reddit community came to an agreement to mass downvote a <a href="https://www.reddit.com/r/StarWarsBattlefront/comments/7cff0b/seriously_i_paid_80_to_have_vader_locked/dppum98/?context=3">reply from EA Community</a> to a user frustrated about their questionable revenue model on Star Wars Battlefront.
+        At the time of this writing, the comment has a score of -667,815 points, the lowest on the entire platform.
+      </p>
+      <hr/>
+      <p>
+        Secondly, Reddit imposes a prior separation of its content into disjoint communities (formally named <b>subreddits</b>).
+        Each subreddit is a forum of its own, with a specific set of rules and informal codes that members adhere to.
+        They vary from very large communities discussing a broad range of subjects (for instance <a href="https://www.reddit.com/r/politics">/r/politics</a>) to smaller niche groups centered around a very specific topic. (e.g. <a href="https://www.reddit.com/r/birdstakingthetrain">/r/BirdsTakingTheTrain</a>).
+      </p>
+
+      <!-- <br />
+      <br />
+      These communities are organized around very ..
+      Below, one can find the top 10 subreddits in terms of total number of comments. -->
+      <!-- Even though that might not be representative of the entire set of comments (as there are a lot of smaller communities for more precise topics), it is interesting to note that 9 out of 10 communities in the top are either about politics or sports. -->
+      <hr/>
+      <h4 style='text-align:center;'>High-Level Statistics</h4>
+      <br/>
+      <!-- <hr /> -->
+      <!-- <div class="plot-container"> -->
+      <div id="plot-reddit-traffic" class="sub-plot-left">
+        <script> plot_traffic('plot-reddit-traffic') </script>
+      </div>
+      <div id="plot-top-subreddits" class="sub-plot-right">
+        <script> plot_top_subreddits('plot-top-subreddits') </script>
+      </div>
+      <div class="legend">
+        On the left, one can see the daily number of comments posted on Reddit over the years (averaged over a period of 60 days).
+        On the right are plotted the 10 biggest subreddits in terms of total comments posted.
+      </div>
+
+      <hr />
+
+      <p>
+        In the chart above, it is already interesting to note that 9 out of the 10 the biggest Reddit communities are related to either politics or sports.
+        This highlights a potential bias in our data, as the set of Reddit users might not be representative of the general population in terms of interests or behaviors.
+        <!-- The reader will have to keep this in mind throughout the rest of this article. -->
+      </p>
+
+      <h3>Finding the Right Metric</h3>
+
+      <p>
+        The initial part of our research was based around the notion of divisiveness itself.
+        Given the available data, how can we measure if a particular discussion is polarized or not?
+        What is a sign that a topic is controversial?
+      </p>
+      <p>
+        In our research, we define polarization as the degree to which people's opinion on a topic are clustered around several extreme, divergent positions.
+        In other words, it can be thought of as the lack of a healthy middle-ground in the opinion space of a community.
+        Similarly, a particular topic is seen as controversial if it easily creates such a polarization.
+        For example, gun control in america is a controversial topic because a people either argue for a complete ban on guns, or total freedom.
+        This leaves little room for compromise.
+      </p>
+      <p>
+        Having said that, we quickly realized that polarization itself is a complex, multi-faceted notion that will be hard to measure by itself.
+        In order to capture it properly, we therefore decided to keep 4 metrics, each measuring a different aspect or consequence of a controversial topic.
+        For each metric, we present its distribution over the dataset and its average over 4 meta-categories of subreddits (compiled with the help of <a href="https://www.reddit.com/r/ListOfSubreddits">/r/ListOfSubreddits</a>).
+      </p>
+
+      <hr/>
+      <!-- <h4 style='text-align:center;'>Description of Metrics</h4> -->
+
+      <br />
+
+
+
+      <ul id="metric-list" class="horizontal-list">
+        <li id="metric-agreement" class="horizontal-item-select"><a href="#" onclick="plot_category_metric('agreement'); return false;">Agreement</a></li>
+        <li id="metric-positivity" class="horizontal-item"><a href="#" onclick="plot_category_metric('positivity'); return false;">Positivity</a></li>
+        <li id="metric-negativity" class="horizontal-item"><a href="#" onclick="plot_category_metric('negativity'); return false;">Negativity</a></li>
+        <li id="metric-vulgarity" class="horizontal-item"><a href="#" onclick="plot_category_metric('vulgarity'); return false;">Vulgarity</a></li>
+      </ul>
+
+      <br/>
+
+      <div style="height:350px">
+        <div id="metric-description", class="subtext">
+          <!-- Check out plot_category_metric.js for content -->
+        </div>
+        <div id="plot-metric-distrib" class="sub-plot-left"> </div>
+        <div id="plot-category-metric" class="sub-plot-right"> </div>
+      </div>
+      <hr/>
+
+      In the plot on the right, we already notice that politics seems to be the most polarizing category.
+      It simultaneously exhibits the lowest level agreement and positivity while having the highest negativity and vulgarity.
+
+      <script> plot_category_metric('agreement') </script>
+
+      <h3>A Look at Communities</h3>
+
+      <p>
+        With all our metrics properly defined, we are now fully equipped to explore the dataset.
+        In particular, let's first have a look at how the different communities of Reddit compare with regards to agreement and positivity.
+      </p>
+
+      <p>
+        Looking at the plot below, some things already stand out.
+        <a href="https://reddit.com/r/The_Donald">/r/The_Donald</a>, a subreddit dedicated to unconditional fans of Donald Trump, is by far the subreddit with the highest agreement of all.
+        We found two possible explanations to this result.
+        In the first scenario, this community truly is always in constant agreement, such that only very few comments ever disagree with the general opinion.
+        Or, such comments do exist but are systematically removed by the moderation team.
+        Either way, this result points towards a general feeling that Redditors visiting this community might have experienced: The_Donald is a big echo chamber.
+      </p>
+
+      <hr />
+      <h4 style='text-align:center;'>Positivity Versus Agreement Score</h4>
+      <div id="plot-subreddit-agreement" class="plot">
+        <script> plot_subreddit_agreement('plot-subreddit-agreement') </script>
+      </div>
+      <div class="legend">
+        <!-- The plot above shows the agreement score and positivity of the top 50 biggest subreddits. -->
+        <!-- First, we notice that there is no clear correlation between the two metrics. -->
+        <!-- The most -->
+        <!-- In the plot above, one can see that there is not clear correlation between -->
+        <!-- Even though ..., it is interesting to note 9 out of the 10 the biggest communities are related to either politics (blue) or sports (orange). -->
+        <!-- This also highlights a potential bias in our data, as the set of Reddit users might not be representative of the general population in terms of interests or behaviors. -->
+      </div>
+      <hr />
+
+      <p>
+        We can also point out the location of <a href="https://reddit.com/r/worldnews">/r/worldnews</a>, <a href="https://reddit.com/r/news">/r/news</a> and <a href="https://reddit.com/r/politics">/r/politics</a>, all of them in the bottom left.
+        <!-- All three being non-partisan communities, their status as communities with overall low agreement provides a good comparison point with The_Donald. -->
+        With all three being non-partisan communities, their overall low agreement simultaneously supports our hypothesis about The_Donald and provides a good comparison point.
+        Moreover, we also notice that the discussions related to politics tend to be the least positive of all.
+      </p>
+
+      <!-- <p>
+        We can also point out the location of <a href="https://reddit.com/r/worldnews">/r/worldnews</a>, <a href="https://reddit.com/r/news">/r/news</a> and <a href="https://reddit.com/r/politics">/r/politics</a>, all of them in the bottom left.
+        With all three being non-partisan communities, their overall low agreement simultaneously supports our hypothesis about The_Donald and provides a good comparison point.
+        Moreover, we also notice that the discussions related to politics tend to be the least positive of all.
+      </p> -->
+
+
+      <p>
+        On the other side of the plot, we notice that <a href="https://reddit.com/r/aww">/r/aww</a> and <a href="https://reddit.com/r/trees">/r/trees</a> are featured as the most wholesome communities.
+        This is not surprising.
+        Indeed, the first one is a community dedicated to posting cute pictures of animals.
+        The later is a subreddit reserved to regular users of a special kind of "tree", which we leave it to the user to figure out by themselves.
+      </p>
+      <hr/>
+      <div class="subtext">
+        <b>Hint</b> - Snoop Dogg used to be a big contributor of <a href="https://reddit.com/r/trees">/r/trees</a>, accumulating a respectable amount of 649,567 Reddit Karma points on his main account <a href="https://www.reddit.com/user/Here_Comes_The_King/">/u/Here_Comes_The_King</a/>
+      </div>
+      <hr/>
+
+      <!-- - Attempts to use score -->
+
+      <!-- <div class="side-bar-anchor">
+        <div class="side-bar">
+          <h4>Reddit Fun Fact</h4>
+          A negative score does not necessarily indicate a polarizing discussion.
+          On the blessed day of November 12, 2017, the entire Reddit community came together as a whole to mass down-vote a <a href="https://www.reddit.com/r/StarWarsBattlefront/comments/7cff0b/seriously_i_paid_80_to_have_vader_locked/dppum98/?context=3">reply from EA Community</a> to a user frustrated about their questionable revenue model on Star Wars Battlefront.
+          The comment currently has a score of -667,815 points, the lowest on the entire platform.
+        </div>
+      </div> -->
+
+      <!-- <h3>Correlations</h3>
+
+      <h3>Failed Attempts</h3>
+
+      - Deleted comments
+      - Gold
+      - -->
+
+      <h3>The Evolution of the Divide</h3>
+
+      <p>
+        As stated in the introduction, another one of our motivations in this study was to understand how polarization and divisiveness have evolved over time.
+        Is our society truly more polarized today, as some of the media seem to think?
+        If that is the case, we should be able to find some hints supporting this theory while looking at long-term trends on Reddit.
+      </p>
+      <p>
+        We started by analyzing how our agreement metric has evolved over time.
+        Looking at the results below, what we find is a pretty clear upward trend since 2012, with a sharp increase around November 2016.
+        Concretely, it means that the average Reddit user is more in agreement with the content they see on the platform today than they were 10 years ago.
+        There are many factors that can contribute to this.
+        For instance, Reddit might have tweaked and improved their underlying ranking algorithm (for instance, which posts make it to the front page).
+        <!-- This could also be the influence of -->
+        However, it remains that the average Reddit user is lesser and lesser in contact with opinions with which they disagree and might experience a greater feeling of consensus as a result.
+        This
+        <!-- Regardless of the reason, -->
+        <!-- This could also be the results of a better moderation team tracking  -->
+        <!-- Now it is important to remember that there could be many factors  -->
+        <!-- Now to be fair, there are many factors that could contribute to such a result. -->
+        <!-- For instance, Reddit might have updated their ranking algorithm, such -->
+        <!-- But it that the average Reddit user is more in agreement with the content that they interact with. -->
+        <!-- This echoes some of our previous results related to the echo chamber phenomenon. -->
+      </p>
+      <p>
+        The echo chamber argument is also strenghtened by the results found on the second plot.
+        There, we can see that the increase in agreement is coupled with a 20% decrease in the average number of communities a user interacts with.
+        Altogether, this supports a potential explanation that people might have formulated: online communities have become more polarized as users increasingly interact with like-minded individuals.
+        <!-- But how does that correlates with our other metrics? -->
+      </p>
+
+      <hr />
+      <h4 style='text-align:center;'>The Echo Chamber Effect</h4>
+      <br/>
+      <div id="plot-daily-agreement" class="sub-plot-left">
+        <script> plot_daily_agreement('plot-daily-agreement') </script>
+      </div>
+
+      <div id="plot-monthly-contributions" class="sub-plot-right">
+        <script> plot_monthly_contributions('plot-monthly-contributions') </script>
+      </div>
+      <div class="legend">
+        In the first figure, one can see how the agreement factor, despite an initial recess between 2010 and 2012, has since then steadily increased.
+        On the second plot, we see that the average number of subreddits in which a user participates has decreased by approximately 20% in the same time lapse.
+      </div>
+      <hr />
+      <p>
+        Next, we asked ourselves how this results correlate with the other metrics we defined like positivity and negativity.
+        In fact, we saw that positivity on Reddit has globally been increasing from 2008 to 2012 and then reached a pretty steady plateau.
+        At the same time, the negativity has been decreasing in an almost-perfectly mirrored fashion.
+      </p>
+      <p>
+        Finally, we note that the initial dip matches with the 2008 housing crisis and seems to increase as the economy recovered, but establishing wether there is a significant correlation is beyond the scope of this study.
+      </p>
+      <hr/>
+      <h4 style='text-align:center;'>Positivity VS Negativity</h4>
+      <br/>
+      <div id="plot-daily-nlp" class="plot" style="height: 18rem;">
+        <script> plot_daily_nlp('plot-daily-nlp') </script>
+      </div>
+      <div class="legend">
+        Here, we see that the positivity and negativity metrics are mirrored over time.
+        Despite an initial decrease between 2006 and 2008, positivity has been on the rise until 2012 and fairly flat since then.
+      </div>
+      <hr/>
+      <h3>Conclusions</h3>
+      In conclusion, we have seen multiple ways to indirectly observe the effects of polarization, a notion hard to measure by itself.
+      Through these metrics, we detected that Reddit users are more polarized today, in the sense that on average, users partake in a smaller amount of communities that exhibit a higher level of unanimity.
+      This provides support for the hypothesis that modern social medias and their inherent filter bubbles create an echo chamber effect.
+      <hr />
+      <div class="subtext">
+        <b>Data Source: </b>This entire study was based on  <a href="http://academictorrents.com/details/85a5bd50e4c365f8df70240ffd4ecc7dec59912b">a free, publicly available dataset</a>. containing over 3 billion Reddit comments ranging from December 2005 to March 2017.
+        It was kindly aggregated by Reddit user <a href=“https://www.reddit.com/user/Stuck_In_the_Matrix/”>/u/Stuck_In_the_Matrix</a> and more information can be found in <a href="https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/">a Reddit post</a> he wrote about it.
+        We thank him deeply for his contribution.
+      </div>
+      <hr />
+      <div class="subtext">
+      [1] Davidson et al.(2017), <em>Automated Hate Speech Detection and the Problem of Offensive Language.</em> Proceedings of the 11th International AAAI Conference on Web and Social Media.
+      </div>
+    </main>
+  </body>
+</html>
