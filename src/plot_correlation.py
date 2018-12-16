@@ -44,29 +44,33 @@ def plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 30)
 
 
 def plot_corr_mat(ax, data, main_title, corr_name, opt_name=''):
-    ax.matshow(data.corr())
+    ax_tmp = ax.matshow(data.corr())
     ax.set_title(main_title + ' ' + corr_name + ' ' + opt_name + 'correlation matrix')
     ax.set_xticklabels(["s"] + list(data.columns.values), rotation=90)
     ax.set_yticklabels(["s"] + list(data.columns.values))
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.xaxis.set_ticks_position('bottom')
+    return ax_tmp
 
 
 def plot_corr_mats(metrics_list, main_title, corr_names, opt_names_list=None):
     if (len(metrics_list) == 1):
-        fig, axes = plt.subplots(nrows=1, ncols=len(corr_names), figsize=(12, 12), constrained_layout=True)
+        fig, axes = plt.subplots(nrows=1, ncols=len(corr_names), figsize=(12, 5), constrained_layout=True)
         for i, corr in enumerate(corr_names):
-            plot_corr_mat(axes[i], metrics_list[0], main_title, corr, opt_names_list[i] if opt_names_list is not None else '')
+            ax = plot_corr_mat(axes[i], metrics_list[0], main_title, corr, opt_names_list[i] if opt_names_list is not None else '')
+            plt.colorbar(ax)
     elif (len(corr_names) == 1):
-        fig, axes = plt.subplots(nrows=len(corr_names), ncols=len(metrics_list), figsize=(12, 12), constrained_layout=True)
+        fig, axes = plt.subplots(nrows=len(corr_names), ncols=len(metrics_list), figsize=(12, 5), constrained_layout=True)
         for i, metric in enumerate(metrics_list):
-            plot_corr_mat(axes[i], metric, main_title, corr_names[0], opt_names_list[i] if opt_names_list is not None else '')
+            ax = plot_corr_mat(axes[i], metric, main_title, corr_names[0], opt_names_list[i] if opt_names_list is not None else '')
+            plt.colorbar(ax)
     else:
-        fig, axes = plt.subplots(nrows=len(corr_names), ncols=len(metrics_list), figsize=(12, 12), constrained_layout=True)
+        fig, axes = plt.subplots(nrows=len(corr_names), ncols=len(metrics_list), figsize=(12, 5), constrained_layout=True)
         for i, metric in enumerate(metrics_list):
             for j, corr in enumerate(corr_names):
-                plot_corr_mat(axes[i, j], metric, main_title, corr, opt_names_list[i] if opt_names_list is not None else '')
+                ax = plot_corr_mat(axes[i, j], metric, main_title, corr, opt_names_list[i] if opt_names_list is not None else '')
+                plt.colorbar(ax)
 
 
 def plot_metric(metrics, ax, main_title, title1, title2, col1, col2):
