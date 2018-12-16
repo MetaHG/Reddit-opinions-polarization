@@ -106,7 +106,18 @@ One last folder should get a mention even though it is absent from this reposito
 
 ## Description of Each Person's Work
 
-* **Julien Perrenoud** -
+**Julien Perrenoud**
+
+* ML2 - Initial setup to access cluster, run jobs and fetch data back (bash scripts)
+* ML2 - Definition of Agreement score
+* ML2 - High-Level metrics (total count of comments, deleted / gold / controversial, etc...)
+* ML2 - Daily metrics, including daily agreement
+* ML3 - Analyze metrics on macro-communities (sports, politics, ...) -> "A Look at Communities"
+* ML3 - Analyze metrics on smaller communities within politics
+* ML3 - Compute average count of subreddits per user per month to compare with increasing agreement
+* ML3 - 
+* ML3 - Setup Jekyll
+* ML3 - Create custom CSS, plots and commentary for data story
 
 * **Valentin Borgeaud** - 
 
