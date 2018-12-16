@@ -12,18 +12,32 @@ def plot_metric_distrib(ax, metric, main_title, title, col, val_to_discard=[]):
 
 
 def plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 30)):
-    fig, axes = plt.subplots(nrows=len(plots), ncols=len(metrics_list), figsize=figsize)
-    
     if(len(plots) == 1):
+        fig, axes = plt.subplots(nrows=len(plots), ncols=len(metrics_list), figsize=figsize)
         for i, metric in enumerate(metrics_list):
             plot_metric_distrib(axes[i], metric, main_titles_list[i], *plots[0])
     elif(len(metrics_list) == 1):
-        for i, plot in enumerate(plots):
-            plot_metric_distrib(axes[i], metrics_list[0], main_titles_list[0], *plot)
+        fig, axes = plt.subplots(nrows=len(plots) // 2, ncols=2, figsize=figsize)
+        for i in range(len(plots) // 2):
+            plot_metric_distrib(axes[i, 0], metrics_list[0], main_titles_list[0], *plots[2*i])
+            if (2 * i + 1) < len(plots):
+                plot_metric_distrib(axes[i, 1], metrics_list[0], main_titles_list[0], *plots[2*i + 1])
     else:
+        fig, axes = plt.subplots(nrows=len(plots), ncols=len(metrics_list), figsize=figsize)
         for i, plot in enumerate(plots):
             for j, metric in enumerate(metrics_list):
                 plot_metric_distrib(axes[i, j], metric, main_titles_list[j], *plot)
+
+    # if(len(plots) == 1):
+    #     for i, metric in enumerate(metrics_list):
+    #         plot_metric_distrib(axes[i], metric, main_titles_list[i], *plots[0])
+    # elif(len(metrics_list) == 1):
+    #     for i, plot in enumerate(plots):
+    #         plot_metric_distrib(axes[i], metrics_list[0], main_titles_list[0], *plot)
+    # else:
+    #     for i, plot in enumerate(plots):
+    #         for j, metric in enumerate(metrics_list):
+    #             plot_metric_distrib(axes[i, j], metric, main_titles_list[j], *plot)
 
 
 def plot_corr_mat(ax, data, main_title, corr_name, opt_name=''):
@@ -37,15 +51,16 @@ def plot_corr_mat(ax, data, main_title, corr_name, opt_name=''):
 
 
 def plot_corr_mats(metrics_list, main_title, corr_names, opt_names_list=None):
-    fig, axes = plt.subplots(nrows=len(corr_names), ncols=len(metrics_list), figsize=(15, 20), constrained_layout=True)
-    
     if (len(metrics_list) == 1):
+        fig, axes = plt.subplots(nrows=1, ncols=len(corr_names), figsize=(12, 12), constrained_layout=True)
         for i, corr in enumerate(corr_names):
             plot_corr_mat(axes[i], metrics_list[0], main_title, corr, opt_names_list[i] if opt_names_list is not None else '')
     elif (len(corr_names) == 1):
+        fig, axes = plt.subplots(nrows=len(corr_names), ncols=len(metrics_list), figsize=(12, 12), constrained_layout=True)
         for i, metric in enumerate(metrics_list):
             plot_corr_mat(axes[i], metric, main_title, corr_names[0], opt_names_list[i] if opt_names_list is not None else '')
     else:
+        fig, axes = plt.subplots(nrows=len(corr_names), ncols=len(metrics_list), figsize=(12, 12), constrained_layout=True)
         for i, metric in enumerate(metrics_list):
             for j, corr in enumerate(corr_names):
                 plot_corr_mat(axes[i, j], metric, main_title, corr, opt_names_list[i] if opt_names_list is not None else '')
@@ -58,16 +73,26 @@ def plot_metric(metrics, ax, main_title, title1, title2, col1, col2):
     ax.set_ylabel(title2)
     
 
-def plot_metrics(metrics_list, titles_list, plots):
-    fig, axes = plt.subplots(nrows=len(plots), ncols=len(metrics_list), figsize=(15, 80))
-
+def plot_metrics(metrics_list, titles_list, plots, figsize=(12, 50)):
     if (len(metrics_list) == 1):
-        for i, plot in enumerate(plots):
-            plot_metric(metrics_list[0], axes[i], titles_list[0], *plot)
+        fig, axes = plt.subplots(nrows=len(plots) // 2, ncols=2, figsize=figsize, constrained_layout=True)
+        for i in range(len(plots) // 2):
+            plot_metric(metrics_list[0], axes[i, 0], titles_list[0], *plots[2*i])
+            if (2*i + 1) < len(plots):
+                plot_metric(metrics_list[0], axes[i, 1], titles_list[0], *plots[2*i + 1])
     else:
+        fig, axes = plt.subplots(nrows=len(plots), ncols=len(metrics_list), figsize=figsize, constrained_layout=True)
         for i, plot in enumerate(plots):
             for j, metric in enumerate(metrics_list):
                 plot_metric(metric, axes[i, j], titles_list[j], *plot)
+
+    # if (len(metrics_list) == 1):
+    #     for i, plot in enumerate(plots):
+    #         plot_metric(metrics_list[0], axes[i], titles_list[0], *plot)
+    # else:
+    #     for i, plot in enumerate(plots):
+    #         for j, metric in enumerate(metrics_list):
+    #             plot_metric(metric, axes[i, j], titles_list[j], *plot)
 
 
 ###
@@ -79,11 +104,16 @@ def plot_daily_distrib(metrics_list, main_titles_list):
         ('negativity', 'neg'),
         ('neutrality', 'neu'),
         ('positivity', 'pos'),
+        ('polarity', 'pol'),
+        ('subjectivity', 'subj'),
+        ('bad words', 'bw'),
+        ('hate words', 'hw'),
+        ('hate words refined', 'hw_ref'),
         ('agreement factor', 'agreement_factor'),
         ('total score', 'total_score')
     ]
     
-    plot_metrics_distrib(metrics_list, main_titles_list, plots)
+    plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 40))
 
 
 def plot_subreddit_distrib(metrics_list, main_titles_list):
@@ -94,7 +124,7 @@ def plot_subreddit_distrib(metrics_list, main_titles_list):
         ('agreement factor', 'agreement_factor')
     ]
     
-    plot_metrics_distrib(metrics_list, main_titles_list, plots)
+    plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 15))
 
 
 def plot_nlp_daily_distrib(metrics_list, main_titles_list):
@@ -106,8 +136,7 @@ def plot_nlp_daily_distrib(metrics_list, main_titles_list):
         ('subjectivity', 'subj'),
         ('bad words', 'bw'),
         ('hate words', 'hw'),
-        ('hate words refined', 'hw_ref'),
-        ('hate word refined intensity', 'intensity')
+        ('hate words refined', 'hw_ref')
     ]
 
     plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 50))
@@ -117,15 +146,10 @@ def plot_nlp_sample_distrib(metrics_list, main_titles_list):
     plots = [
         ('negativity', 'neg', [0]),
         ('neutrality', 'neu', [1]),
-        ('positivity', 'pos', [0]),
-        ('polarity', 'pol', [0]),
-        ('subjectivity', 'subj', [0]),
-        ('bad words', 'bw', [0]),
-        ('hate words', 'hw', [0]),
-        ('hate words refined', 'hw_ref', [0])
+        ('positivity', 'pos', [0])
     ]
 
-    plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 50))
+    plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(10, 15))
             
 
 def plot_daily_metrics(metrics_list, titles_list):
@@ -138,6 +162,28 @@ def plot_daily_metrics(metrics_list, titles_list):
             ('hate words', 'agreement factor', 'hw', 'agreement_factor'),
             ('refined hate words', 'agreement factor', 'hw_ref', 'agreement_factor'),
             ('total score', 'agreement factor', 'total_score', 'agreement_factor'),
+            ('positivity', 'total score', 'pos', 'total_score')]
+    
+    plot_metrics(metrics_list, titles_list, plots)
+
+def plot_daily_metrics_full(metrics_list, titles_list):
+    plots = [('negativity', 'positivity', 'neg', 'pos'),
+            ('negativity', 'neutrality', 'neg', 'neu'),
+            ('positivity', 'neutrality', 'pos', 'neu'),
+            ('polarity', 'negativity', 'pol', 'neg'),
+            ('polarity', 'positivity', 'pol', 'pos'),
+            ('polarity', 'subjectivity', 'pol', 'subj'),
+            ('negativity', 'bad words', 'neg', 'bw'),
+            ('negativity', 'hate words', 'neg', 'hw'),
+            ('negativity', 'hate words refined', 'neg', 'hw_ref'),
+            ('negativity', 'agreement factor', 'neg', 'agreement_factor'),
+            ('neutrality', 'agreement factor', 'neu', 'agreement_factor'),
+            ('positivity', 'agreement factor', 'pos', 'agreement_factor'),
+            ('polarity', 'agreement factor', 'pol', 'agreement_factor'),
+            ('subjectivity', 'agreement factor', 'subj', 'agreement_factor'),
+            ('bad words', 'agreement factor', 'bw', 'agreement_factor'),
+            ('hate words', 'agreement factor', 'hw', 'agreement_factor'),
+            ('refined hate words', 'agreement factor', 'hw_ref', 'agreement_factor'),
             ('positivity', 'total score', 'pos', 'total_score')]
     
     plot_metrics(metrics_list, titles_list, plots)
@@ -155,7 +201,7 @@ def plot_subreddit_metrics(metrics_list, titles_list):
             ('negativity', 'positivity', 'neg', 'pos'),
             ('negativity', 'bad words', 'neg', 'bw')]
     
-    plot_metrics(metrics_list, titles_list, plots)
+    plot_metrics(metrics_list, titles_list, plots, figsize=(12, 25))
 
 def plot_nlp_daily_metrics(metrics_list, titles_list):
     plots = [('negativity', 'positivity', 'neg', 'pos'),
