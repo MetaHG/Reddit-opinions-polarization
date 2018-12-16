@@ -241,16 +241,18 @@ function plot_category_metric(metric) {
             Its calculation is fairly simple as it corresponds to the percentage of comments with a positive score.";
           break;
         case 'positivity':
-          text = "Next, we aimed to measure how positive each one of the available comments are. \
-            In order to do this, we used a dataset of NLTK positive words that we matched against the content of each comment.";
+          text = "Here, we measure how positive each one of the available comments are. \
+            In order to do this, we used the NLTK library sentiment.vader that we matched against the text value of our comments. \
+            The daily (resp. per-subreddit) positivity is simply the mean of each comment within a 60 day window (resp. within the subreddit).";
           break;
         case 'negativity':
-          text = "Similarly to the positivity metric, we defined a negativity metric using another dataset provided by NLTK. \
-            Note that in certain cases it makes sense to combine these two metrics, which is referred below as 'Polarity'."
+          text = "Similarly to the positivity metric, we defined our negativity metric using NLTK. \
+          Thanks to this, we can see that politic-related subreddits are the most negative out of the ones we surveyed."
           break;
         case 'vulgarity':
-          text = "Finally, we also matched each comment against a database of known insults and hate words in order to get a measure of vulgarity. \
-            It is to be noted that this metric does not take into account the intensity of an insult."
+          text = "Finally, we also matched each comment against a database of known insults and hate words provided by Davison et al. [1] \
+            The vulgarity metric is therefore an average of the number of such words contained in a comment.\
+            Again, politics is the most vulgar general topic that we found."
           break;
       }
 
