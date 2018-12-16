@@ -1,11 +1,13 @@
 
+function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+
 function plot_category_metric(metric) {
 
   Plotly.d3.csv("assets/data/category_metrics.csv", function(err, rows){
 
-    function unpack(rows, key) {
-      return rows.map(function(row) { return row[key]; });
-    }
+    console.log(err);
 
     var data = [
         {
