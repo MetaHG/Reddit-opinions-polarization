@@ -33,9 +33,11 @@
     <script src="assets/js/plot_daily_agreement.js"></script>
     <script src="assets/js/plot_subreddit_agreement.js"></script>
     <script src="assets/js/plot_monthly_contributions.js"></script>
+    <script src="assets/js/plot_category_metric.js"></script>
   </head>
   <body>
     <header class="page-header" role="banner">
+      <img src="http://www.doomsteaddiner.net/blog/wp-content/uploads/2015/10/reddit-logo.png" width="100px"/>
       <h1 class="project-name">The Polarization of Political Opinions on Reddit</h1>
       <h2 class="project-tagline">An ADA story by Julien Perrenoud, Valentin Borgeaud and Cédric Viaccoz.</h2>
 
@@ -51,13 +53,20 @@
       EPFL - December 15, 2018
 
       <hr />
-
-      <div class="subtext">
+      <p class="subtext">
+        In the months following the 2016 American election, many media outlets have reported an increase in social divisiveness and the polarization of political opinions.
+        Many of these organizations point at modern social media as a potential cause of this polarization.
+        <!-- The intensification of political debates as well as a growing inability to find common grounds are seen as direct consequences of this divide. -->
+        <!-- Many of these organizations point at modern social media as a potential cause of this polarization. -->
+        <!-- Their inherent filter bubbles and a promotion of extreme opinions create fertile ground for disrespectful debate. -->
+        Through an analysis of the wide range of political and social discussions available on Reddit, we seek here to measure and analyze how this polarization of opinions has evolved over time in order to confirm or disprove this hypothesis.
+      </p>
+      <!-- <div class="subtext">
         <b>Data Source: </b>The study you are about to read is based on a publicly available data set of comments people posted on Reddit.
         It contains a total of N comments ranging from December 2005 to March 2017.
         The data can be downloaded for free <a href="http://academictorrents.com/details/85a5bd50e4c365f8df70240ffd4ecc7dec59912b">here</a>.
         It was kindly aggregated by Reddit user <a href=“https://www.reddit.com/user/Stuck_In_the_Matrix/”>/u/Stuck_In_the_Matrix</a> and more information can be found in <a href="https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/">a Reddit post</a> he wrote about it.
-      </div>
+      </div> -->
       <hr />
 
       <!-- <h2>A Quick History of Reddit</h2> -->
@@ -137,58 +146,79 @@
         What is a sign that a particular topic is controversial?
         In this chapter, we will discuss several metrics that we decided to use in the following study, and motivate our choices.
       </p>
+
       <hr/>
-      <h4 style='text-align:center;'>List of Metrics Used</h4>
+      <!-- <h4 style='text-align:center;'>Description of Metrics</h4> -->
+
       <br />
 
-      <div class="metric-left">
-        <div class="metric-distrib">
+
+
+      <ul id="metric-list" class="horizontal-list">
+        <li id="metric-agreement" class="horizontal-item-select"><a href="#" onclick="plot_category_metric('agreement'); return false;">Agreement</a></li>
+        <li id="metric-positivity" class="horizontal-item"><a href="#" onclick="plot_category_metric('positivity'); return false;">Positivity</a></li>
+        <li id="metric-negativity" class="horizontal-item"><a href="#" onclick="plot_category_metric('negativity'); return false;">Negativity</a></li>
+        <li id="metric-vulgarity" class="horizontal-item"><a href="#" onclick="plot_category_metric('vulgarity'); return false;">Vulgarity</a></li>
+      </ul>
+
+      <br/>
+
+      <div style="height:350px">
+
+        <div id="metric-description" class="subtext">
+          <!-- Check out plot_category_metric.js for content -->
+        </div>
+
+        <div id="plot-category-metric-2" class="sub-plot-left">
+
 
         </div>
+
+        <div id="plot-category-metric" class="sub-plot-right">
+
+        </div>
+      </div>
+      <hr/>
+
+      <script> plot_category_metric('agreement') </script>
+      <!-- <br />
+
+       <div class="metric-left">
+
         <div class="subtext">
           <h4>Agreement Score</h4>
           Our first metric aims to measure the extent to which people participating in a discussion are in agreement with each other.
           Its calculation is fairly simple as it corresponds to the percentage of comments with a positive score.
-          <!-- is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. -->
-        </div>
-      </div>
+          </div>
+      </div> -->
 
-      <div class="metric-left">
-        <div class="metric-distrib">
+      <!-- <div class="metric-left">
 
-        </div>
         <div class="subtext">
           <h4>Positivity</h4>
-          Our first metric aims to measure the extent to which people participating in a discussion are in agreement with each other.
-          Its calculation is fairly simple as it corresponds to the percentage of comments with a positive score.
+          Next, we aimed to measure how positive each one of the available comments are.
+          In order to do this, we used a dataset of NLTK positive words that we matched against the content of each comment.
         </div>
-      </div>
+      </div> -->
 
-      <div class="metric-left">
-        <div class="metric-distrib">
+      <!-- <div class="metric-left">
 
-        </div>
         <div class="subtext">
           <h4>Negativity</h4>
-          Our first metric aims to measure the extent to which people participating in a discussion are in agreement with each other.
-          Its calculation is fairly simple as it corresponds to the percentage of comments with a positive score.
-          <!-- is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. -->
-        </div>
-      </div>
+          Similarly to the positivity metric, we defined a negativity metric using another dataset provided by NLTK.
+          Note that in certain cases it makes sense to combine these two metrics, which is referred below as "Polarity".
+          </div>
+      </div> -->
 
-      <div class="metric-left">
-        <div class="metric-distrib">
+      <!-- <div class="metric-left">
 
-        </div>
         <div class="subtext">
           <h4>Vulgarity</h4>
-          Our first metric aims to measure the extent to which people participating in a discussion are in agreement with each other.
-          Its calculation is fairly simple as it corresponds to the percentage of comments with a positive score.
-          <!-- is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. -->
+          Finally, we also matched each comment against a database of known insults and hate words in order to get a measure of vulgarity.
+          It is to be noted that this metric does not take into account the intensity of an insult.
         </div>
-      </div>
+      </div>  -->
 
-      <hr />
       <p>
         With all our metrics properly defined, we are now fully equipped to explore the dataset.
         In particular, let's first have a look at how the different communities of Reddit compare with regards to agreement and positivity.
@@ -270,17 +300,22 @@
       - Gold
       - -->
 
-      <h2>Polarization Over Time</h2>
+      <h3>Polarization Over Time</h3>
 
       <p>
         Another one of our motivations in this study was to understand how the metrics defined above evolved over time.
         It is indeed fairly common nowadays to read about how polarized our society has become.
         This is often cited as a general feeling, but we could not find many studies attempting to actually back this claim with real data.
       </p>
-      Plotting the above metrics as a function of time gives us interesting results.
 
-
-
+      <p>
+        We started by an analysis of how agreement has evolved over time.
+        Looking at the results, there is a pretty clear upward trend since 2012, with a sharp increase in 2016.
+        Now to be fair, there are many factors that could contribute to such a result.
+        For instance, Reddit might have updated their ranking algorithm, such
+        But it that the average Reddit user is more in agreement with the content that they interact with.
+        This echoes some of our previous results related to the echo chamber phenomenon.
+      </p>
 
       <hr />
       <h4 style='text-align:center;'>Evolution of Polarization</h4>
@@ -298,11 +333,18 @@
 
       <hr />
 
-      Looking at this plot, we notice a continuous increase in the agreement of people with each other.
-      This is interesting, because it highlights one of the potential root causes of this phenomenon.
+      <p>
+        This echo chamber argument is also strenghtened by the results found on the right plot.
+        There, we can see that this increase in agreement coupled with a 20% decrease in the average number of communities a user interacts with.
+        Altogether, this supports a potential explanation that people might have formulated: online communities have become more polarized because users increasingly interact with like-minded individuals.
+        But how does that correlates with our other metrics?
+      </p>
+
+      <!-- Looking at this plot, we notice a continuous increase in the agreement of people with each other. -->
+      <!-- This is interesting, because it highlights one of the potential root causes of this phenomenon. -->
       <!-- This is interesting, because it suggests  -->
-      The division does not come from people disagreeing with each other.
-      It stems from a diminution of how much people with diverging opinions interact with each other.
+      <!-- The division does not come from people disagreeing with each other. -->
+      <!-- It stems from a diminution of how much people with diverging opinions interact with each other. -->
 
       <!-- <hr /> -->
 
