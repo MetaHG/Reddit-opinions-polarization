@@ -3,7 +3,7 @@
 ## Important Notes
 
 * This Readme was also updated (again) with additional information. Namely, we updated the Internal Milestones section with what was done for each of these milestones, we also added a section mentionned how we split the tasks and a description of all the additional datasets we generated.
-* The Data Story can be found [here](https://metahg.github.io/Reddit-opinions-polarization/#content). It contains custom css on top of Jekyll which we tried to make responsive, so it should work on mobile. However, it is best viewed on a regular computer screen.
+* The Data Story can be found [here](https://jfperren.github.io/Reddit-polarization-story/). It contains custom css on top of Jekyll which we tried to make responsive, so it should work on mobile. However, it is best viewed on a regular computer screen. Note that we were note sure if it had to be in a completely separate github repository or simply another folder. Just to be sure, we copied our initial code (which is found in the `docs/` folder) over to [another repository](https://github.com/jfperren/Reddit-polarization-story) which contains only the code related to the data story.
 * Like in Milestone 2, the notebook with Data Collection can be found at [notebooks/DataCollection.ipynb](https://github.com/MetaHG/Reddit-opinions-polarization/blob/master/notebooks/DataCollection.ipynb).
 * All additional work was added **at the end** of the notebook. Hopefully this will make it easier for you to review the new results.**
 
@@ -115,7 +115,6 @@ One last folder should get a mention even though it is absent from this reposito
 * ML3 - Analyze metrics on macro-communities (sports, politics, ...) -> "A Look at Communities"
 * ML3 - Analyze metrics on smaller communities within politics
 * ML3 - Compute average count of subreddits per user per month to compare with increasing agreement
-* ML3 - 
 * ML3 - Setup Jekyll
 * ML3 - Create custom CSS, plots and commentary for data story
 
