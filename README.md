@@ -116,7 +116,7 @@ One last folder should get a mention even though it is absent from this reposito
 * ML2 - Definition of Agreement score
 * ML2 - High-Level metrics (total count of comments, deleted / gold / controversial, etc...)
 * ML2 - Daily metrics, including daily agreement
-* ML3 - Analyze metrics on macro-communities (sports, politics, ...) -> "A Look at Communities"
+* ML3 - Analyze metrics on macro-communities (sports, politics, ...)
 * ML3 - Analyze metrics on smaller communities within politics
 * ML3 - Analyze most extreme subreddits for each metric
 * ML3 - Compute average count of subreddits per user per month to compare with increasing agreement
