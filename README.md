@@ -50,11 +50,13 @@ Finally, to quantify vulgarity, hate speech and lack of respect in general, we a
 
 ```
 .
++--_docs_
 +-- _eggs_
 +-- _jobs_
 +--_notebooks
 |  +--Basic Metrics.ipynb
 |  +--DataCollection.ipynb
+|  +--LDA Trump Hillary.ipynb
 |  +--NLP Metrics.ipynb
 |  +--nlp metrics analysis.ipynb
 |  +--insight.py
@@ -71,13 +73,13 @@ Finally, to quantify vulgarity, hate speech and lack of respect in general, we a
 ```
 Above is a schematic description of the structure of the repository. As we need to perform computations on the cluster using pyspark, most of the files and folders of the repo serve for this purpose. 
 
+* The _docs_ folder contain the source code from our web site serving as a Data Story of the project.
+
 * The _eggs_ folder contains the python libraries we need to deploy on the cluster packaged into eggs.
 
 * The _jobs_ folder contains the python files with the code needed to be run on the cluster for our computations.
 
-* The _notebooks_ folder contains all the notebook that were created in order to do some data exploration and analysis. **DataCollection.ipynb** is the notebook containing the results for this milestone, and the notebook on which we will be working until the end. The other notebook were temporary notebooks used to do some smaller scale computation or testing. The two .py files on this folder are used by the main notebook (DataCollection) in order to reduce the amount of code within it.
-
-* The _report_ folder contains the template for the final latex report.
+* The _notebooks_ folder contains all the notebook that were created in order to do some data exploration and analysis. **DataCollection.ipynb** is the notebook containing all the results from our work which were good enough to be presented. The other notebook were temporary notebooks used to do some smaller scale computation or testing. The two .py files on this folder are used by the main notebook (DataCollection) in order to reduce the amount of code within it.
 
 * The _scripts_ folder contains shell script we developped in order to facilitate our interaction with the cluster: **connect.sh** allows us to connect to the cluster, **sync.sh** will copy the content from this repository into the user filespace of the cluster, **run.sh** is used to run a selected job from the folder _jobs_ and finally, **fetch.sh** is used to retrieve locally the results from our jobs computed by the cluster saved into parquet format.
 
@@ -85,7 +87,7 @@ Above is a schematic description of the structure of the repository. As we need 
 
 * The _README.md_ file is the one you are currently reading.
 
-One last folder should get a mention even though it is absent from this repository, is the _data_ folder. This is where we store all the results from big computations that were done either on the cluster or locally but were too big to be kept on the github. This folder is syncronized between the team members using dropbox, and we don't put it on this repository due to its sheer size (more than 3GB).
+One last folder should get a mention even though it is absent from this repository, is the _data_ folder. This is where we store all the results from big computations that were done either on the cluster or locally but were too big to be kept on the github. This folder is syncronized between the team members using dropbox, and we don't put it on this repository due to its sheer size (more than 7GB).
 
 
 ## Internal steps until Milestone 3 (And Results)
@@ -124,34 +126,40 @@ One last folder should get a mention even though it is absent from this reposito
 
 * **Cédric Viaccoz** - 
 
+* ML2 - First local implementation of LDA and test on r/news in november 2016
+* ML3 - Pyspark implementation of LDA
+* ML3 - LDA on r/The_Donald and r/hillaryclinton with result analysis
+
 ## Description of Parquets
 
 During the scope of this project, we generated a big amount of derivative data from the dataset. Because of the sheer size of information, we often had to store this data in parquets. Concretely, it means that if someone wants to re-run the notebook and still get the results that are displayed (in order to verify the results, for instance), one will have to download the needed parquet files.
 
 For practical, synchronization purposes, we decided to host all the parquet files on Dropbox. One can download each of them by using the following [link](https://www.dropbox.com/sh/8b8j0k4g0rtr9g1/AADHYwW_ekdEIjDRFA122PXsa?dl=0). Moreover, below is a list of all parquets used and how they were generated.
 
-* `2016_news_comment.parquet` - 
+* `2016_news_comment.parquet` - This was generated via an outdated version of `jobs/fetch_content_for_lda.py`, it contains comments from the news subreddit from the 8th of November 2015 until the 7th of november 2016. 
 * `agreement_per_community.parquet` - This was generated via the `subreddit_nlp_full_0.001` and the list of subreddits (meta-category) in `data/subreddits`
 * `agreement_per_subgroup.parquet` - Same as `agreement_per_community.parquet` but using the subgroup instead of meta-category.
 * `daily_agreement.parquet` - This was generated via the cluster job `jobs/daily_agreement.py` directly on the full dataset
 * `daily_metrics.parquet` - This was generated via the cluster job `jobs/daily_metrics.py` directly on the full dataset
 * `dataset_metrics.parquet` - This was generated via the cluster job `jobs/basic_metrics.py` directly on the full dataset
 * `donald_comments.parquet` - This contains all the comments available on the subreddit The_Donald. Ran directly on the cluster.
+* `hillary_lda_result.parquet` - holds one result of LDA made on r/hillaryclinton the week before the election. Generated by `notebooks/LDA Trump Hillary.ipynb`
+* `hillary_lda_prepro.parquet` - holds the preprocessed comments for LDA of hillaryclinton the week before the election. It is the input on which LDA was run to produce `hillary_lda_result.parquet`.
+* `hillary_comments.parquet` - This contains all the comments available on the subreddit hillaryclinton starting in 2016. Ran directly on the cluster.
 * `monthly_contribs.parquet` - This was generated using the script `jobs/avg_monthly_contributions` directly on the entire dataset on the cluster.
 * `nlp_filtered_for_communities.parquet` - This is a lighter version of `subreddit_nlp_full_0.001` which contains only communities in `data/subreddits/`
 * `nlp_per_community.parquet` - Same as above I believe.
-* `oct_2016_news_comment.parquet` - 
-* `oneW_oneT_lda_result.parquet` - 
+* `oct_2016_news_comment.parquet` - Same as `2016_news_comments.parquet` but only the comments october 2016 which were preprocessed into thread for LDA purpose.
+* `oneW_oneT_lda_result.parquet` - Result from milestone 2 LDA on one month of news comment. Topics were generated at the post level, with one topic per post and one word per topic.
 * `sample.parquet` - This was the first parquet generated. It is basically a random subsample (`0.001`) of the whole dataset. It was used for fast iteration of multiple data explorations before running on the full dataset.
 * `score_metrics.parquet` - 
 * `subreddit_agreement.parquet` - 
 * `subreddit_nlp_full_0.001.parquet` - 
 * `subreddits.parquet` - This contains a spark-ready version of the list of subreddits found in the txt files at `data/subreddits`
-* `threeW_twoT_lda_result.parquet` - 
+* `threeW_twoT_lda_result.parquet` - Same as `oneW_oneT_lda_result.parquet` except with two topics per post, and 3 words per topic.
+* `trump_lda_result.parquet` - same as `hillary_lda_result.parquet` but with The_Donald comments.
+* `trump_lda_prepro.parquet` - same as `hillary_lda_prepro.parquet` but with The_Donald comments.
 
-
-## Questions for TAs
-* How does the cluster schedule job? Sometimes we had to wait 1 hour for a job to be runned after being accepted, while other time this took only 20 seconds.
 
 
 [1]: Davidson et al.(2017), Automated Hate Speech Detection and the Problem of Offensive Language._Proceedings of the 11th International AAAI Conference on Web and Social Media_. 
