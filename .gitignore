@@ -109,6 +109,10 @@ archives/
 # Datasets
 *.zip
 data/*.csv
+sample_csvs
+hatespeech_lexicon
+bad_words_lexicon
+lexicons
 *.parquet
 *.rtf
 *_SUCCESS
