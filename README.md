@@ -1,6 +1,11 @@
 # Opinion Polarization on Reddit
 
-**Note for TA's - The notebook with Data Collection can be found at [notebooks/DataCollection.ipynb](https://github.com/MetaHG/Reddit-opinions-polarization/blob/master/notebooks/DataCollection.ipynb). This Readme was also updated (again) with additional information. Namely, we updated the Internal Milestones section with what was done for each of these milestones, we also added a section mentionned how we split the tasks and a description of all the additional datasets we generated. Finally, please note that all additional work was added AT THE END of the DataCollection.ipynb. Hopefully this will make it easier for you to review the new results.**
+## Important Notes
+
+* This Readme was also updated (again) with additional information. Namely, we updated the Internal Milestones section with what was done for each of these milestones, we also added a section mentionned how we split the tasks and a description of all the additional datasets we generated.
+* The Data Story can be found [here](https://metahg.github.io/Reddit-opinions-polarization/#content). It contains custom css on top of Jekyll which we tried to make responsive, so it should work on mobile. However, it is best viewed on a regular computer screen.
+* Like in Milestone 2, the notebook with Data Collection can be found at [notebooks/DataCollection.ipynb](https://github.com/MetaHG/Reddit-opinions-polarization/blob/master/notebooks/DataCollection.ipynb).
+* All additional work was added **at the end** of the notebook. Hopefully this will make it easier for you to review the new results.**
 
 ## Abstract
 
