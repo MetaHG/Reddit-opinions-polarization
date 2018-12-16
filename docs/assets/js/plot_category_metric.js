@@ -7,7 +7,7 @@ function plot_category_metric(metric) {
 
   Plotly.d3.csv("assets/data/category_metrics.csv", function(err, rows){
 
-    console.log(err);
+    console.log(rows);
 
     var data = [
         {

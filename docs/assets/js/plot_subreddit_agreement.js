@@ -53,6 +53,7 @@ function plot_subreddit_agreement(elem) {
           "hoverinfo": "text",
           "xsrc": "jfperren:4:db3f6b",
           "textsrc": "jfperren:4:f079b4",
+          "text": unpack(rows, 'subreddit'),
           "y": unpack(rows, 'pos'),
           "x": unpack(rows, 'agreement_factor'),
           "type": "scatter",
