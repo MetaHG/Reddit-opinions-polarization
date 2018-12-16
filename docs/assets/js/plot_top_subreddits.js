@@ -66,6 +66,6 @@ function plot_top_subreddits(elem) {
         }
     }
 
-    Plotly.plot(elem, data, layout, {responsive: true});
+    Plotly.plot(elem, data, layout, {responsive: true, displayModeBar: false});
   });
 }

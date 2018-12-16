@@ -32,18 +32,18 @@ function plot_subreddit_agreement(elem) {
               "title": "Agreement Score",
               "showgrid": true,
               "range": [
-                  0.7335650812284801,
-                  0.9937903691493487
+                  0.72,
+                  1.0
               ],
               "fixedrange": true,
               "type": "linear",
-              "autorange": true
+              // "autorange": true
           },
           "hovermode": "closest",
           "margin": {
-              "r": 80,
+              // "r": 80,
               "pad": 0,
-              "t": 100
+              "t": 20
           }
       };
 
@@ -78,7 +78,7 @@ function plot_subreddit_agreement(elem) {
           "mode": "markers+text"
       }]
 
-      Plotly.newPlot(elem, data, layout, {responsive: true});
+      Plotly.newPlot(elem, data, layout, {responsive: true, displayModeBar: false});
     });
   });
 }

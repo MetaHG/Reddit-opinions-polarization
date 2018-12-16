@@ -37,14 +37,14 @@ function plot_daily_agreement(elem) {
         hovermode: "y",
         bargroupgap: 0.48,
         margin: {
-            pad: 10,
-            r: 120,
-            b: 40,
-            l: 120,
-            t: 40
+          pad: 10,
+          r: 40,
+          b: 40,
+          l: 40,
+          t: 20
         }
     };
 
-    Plotly.newPlot(elem, data, layout, {responsive: true});
+    Plotly.newPlot(elem, data, layout, {responsive: true, displayModeBar: false});
   })
 }
