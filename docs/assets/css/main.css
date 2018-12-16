@@ -319,7 +319,7 @@ a:hover { text-decoration: underline; }
 .legend, .subtext { font-size: 0.7rem }
 .sub-plot-left { width: 50%; height: 18rem; float: left; }
 .sub-plot-right { width: 50%; height: 18rem; float: right; }
-@media screen and (max-width: 42em) { .sub-plot-left, .sub-plot-right { float:none; width: 100%; } }
+@media screen and (max-width: 42em) { .sub-plot-left, .sub-plot-right { float:none; width: 100%; display: block; } }
 
 
 .metric-left, .metric-right { height: 200px; }
