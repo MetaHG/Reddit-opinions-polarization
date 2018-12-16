@@ -17,11 +17,14 @@ def plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 30)
         for i, metric in enumerate(metrics_list):
             plot_metric_distrib(axes[i], metric, main_titles_list[i], *plots[0])
     elif(len(metrics_list) == 1):
-        fig, axes = plt.subplots(nrows=len(plots) // 2, ncols=2, figsize=figsize)
-        for i in range(len(plots) // 2):
+        nrows = (len(plots) // 2) + (len(plots) % 2)
+        fig, axes = plt.subplots(nrows=nrows, ncols=2, figsize=figsize)
+        for i in range(nrows):
             plot_metric_distrib(axes[i, 0], metrics_list[0], main_titles_list[0], *plots[2*i])
             if (2 * i + 1) < len(plots):
                 plot_metric_distrib(axes[i, 1], metrics_list[0], main_titles_list[0], *plots[2*i + 1])
+            else:
+                axes[i, 1].axis('off')
     else:
         fig, axes = plt.subplots(nrows=len(plots), ncols=len(metrics_list), figsize=figsize)
         for i, plot in enumerate(plots):
@@ -75,11 +78,14 @@ def plot_metric(metrics, ax, main_title, title1, title2, col1, col2):
 
 def plot_metrics(metrics_list, titles_list, plots, figsize=(12, 50)):
     if (len(metrics_list) == 1):
-        fig, axes = plt.subplots(nrows=len(plots) // 2, ncols=2, figsize=figsize, constrained_layout=True)
-        for i in range(len(plots) // 2):
+        nrows = (len(plots) // 2) + (len(plots) % 2)
+        fig, axes = plt.subplots(nrows=nrows, ncols=2, figsize=figsize, constrained_layout=True)
+        for i in range(nrows):
             plot_metric(metrics_list[0], axes[i, 0], titles_list[0], *plots[2*i])
             if (2*i + 1) < len(plots):
                 plot_metric(metrics_list[0], axes[i, 1], titles_list[0], *plots[2*i + 1])
+            else:
+                axes[i, 1].axis('off')
     else:
         fig, axes = plt.subplots(nrows=len(plots), ncols=len(metrics_list), figsize=figsize, constrained_layout=True)
         for i, plot in enumerate(plots):
@@ -124,7 +130,7 @@ def plot_subreddit_distrib(metrics_list, main_titles_list):
         ('agreement factor', 'agreement_factor')
     ]
     
-    plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(15, 15))
+    plot_metrics_distrib(metrics_list, main_titles_list, plots, figsize=(20, 20))
 
 
 def plot_nlp_daily_distrib(metrics_list, main_titles_list):
