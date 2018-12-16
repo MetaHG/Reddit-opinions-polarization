@@ -108,7 +108,7 @@ archives/
 
 # Datasets
 *.zip
-*.csv
+data/*.csv
 *.parquet
 *.rtf
 *_SUCCESS

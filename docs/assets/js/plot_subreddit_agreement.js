@@ -53,10 +53,31 @@ function plot_subreddit_agreement(elem) {
           "hoverinfo": "text",
           "xsrc": "jfperren:4:db3f6b",
           "textsrc": "jfperren:4:f079b4",
+          "text": unpack(rows, 'subreddit'),
           "y": unpack(rows, 'pos'),
           "x": unpack(rows, 'agreement_factor'),
           "type": "scatter",
-          "mode": "markers"
+          "mode": "markers",
+          "marker": {
+              "colorsrc": "jfperren:4:db3f6b",
+              "autocolorscale": false,
+              "cmin": 0.5,
+              "colorscale": [
+                  [ 0,      "#f7fbff" ],
+                  [ 0.125,  "#deebf7" ],
+                  [ 0.25,   "#c6dbef" ],
+                  [ 0.375,  "#9ecae1" ],
+                  [ 0.5,    "#6baed6" ],
+                  [ 0.625,  "#4292c6" ],
+                  [ 0.75,   "#2171b5" ],
+                  [ 0.875,  "#08519c" ],
+                  [ 1,      "#08306b" ]
+              ],
+              "color": unpack(rows, 'agreement_factor'),
+              "reversescale": false,
+              "cauto": false,
+              "cmax": 1
+          }
         },{
           "textposition": "top center",
           "showlegend": false,

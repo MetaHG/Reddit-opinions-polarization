@@ -1,6 +1,11 @@
 # Opinion Polarization on Reddit
 
-**Note for TA's - The notebook with Data Collection can be found at [notebooks/DataCollection.ipynb](https://github.com/MetaHG/Reddit-opinions-polarization/blob/master/notebooks/DataCollection.ipynb). This Readme was also updated with additional information.**
+## Important Notes
+
+* This Readme was also updated (again) with additional information. Namely, we updated the Internal Milestones section with what was done for each of these milestones, we also added a section mentionned how we split the tasks and a description of all the additional datasets we generated.
+* The Data Story can be found [here](https://metahg.github.io/Reddit-opinions-polarization/#content). It contains custom css on top of Jekyll which we tried to make responsive, so it should work on mobile. However, it is best viewed on a regular computer screen.
+* Like in Milestone 2, the notebook with Data Collection can be found at [notebooks/DataCollection.ipynb](https://github.com/MetaHG/Reddit-opinions-polarization/blob/master/notebooks/DataCollection.ipynb).
+* All additional work was added **at the end** of the notebook. Hopefully this will make it easier for you to review the new results.**
 
 ## Abstract
 
@@ -81,22 +86,68 @@ Above is a schematic description of the structure of the repository. As we need 
 One last folder should get a mention even though it is absent from this repository, is the _data_ folder. This is where we store all the results from big computations that were done either on the cluster or locally but were too big to be kept on the github. This folder is syncronized between the team members using dropbox, and we don't put it on this repository due to its sheer size (more than 3GB).
 
 
-## Internal steps until Milestone 3
-* Refine list of subreddits to be analyzed based on existing metrics.
+## Internal steps until Milestone 3 (And Results)
 
-* Focus on the subreddits where the agreement factor is the lowest. (i.e. video games, poltical/news and cities). Produce some basic metrics on them. Interpret those metrics according to the context (i.e. subject of the subreddit).
+* Refine list of subreddits to be analyzed based on existing metrics. -> *Done, we ran more computations and studies on lists of subreddits.*.
 
-* Run NLP on longer samples and/or subreddits chosen.
+* Focus on the subreddits where the agreement factor is the lowest. (i.e. video games, poltical/news and cities). Produce some basic metrics on them. Interpret those metrics according to the context (i.e. subject of the subreddit). -> *Done, better analysis of how the metrics vary on specific subgroups of subreddits*.
 
-* Trying other metrics to understand potential biases in the ones chosen previously.
+* Run NLP on longer samples and/or subreddits chosen. -> *Done, still could not run on the entire dataset but got closer in terms of size of sample and was able to run without restriction in date range*.
 
-* Understand if [deleted] and [removed] are actually usable.
+* Trying other metrics to understand potential biases in the ones chosen previously. -> *Got some interesting results with number of subreddits visited per person per month. Also as able to fully use nlp metrics and found some good results.*.
 
-* In-depth analysis of potential reasons for the jump in agreement observed around November 2016, observe if other metrics have similar behavior.
+* Understand if [deleted] and [removed] are actually usable. -> *They were not.*
 
-* Study correlation between the different metrics.
+* In-depth analysis of potential reasons for the jump in agreement observed around November 2016, observe if other metrics have similar behavior. -> *We found that it was exactly on November 1st 2016 (so not election day). Could not find a reason for this yet.*
 
-* Finally, using all the previous results and evidences, conclude by answering our research questions.
+* Study correlation between the different metrics. -> *Done, did not find too many interesting things there*.
+
+* Finally, using all the previous results and evidences, conclude by answering our research questions. -> *Done in the data story and the notebook.*
+
+## Description of Each Person's Work
+
+**Julien Perrenoud**
+
+* ML2 - Initial setup to access cluster, run jobs and fetch data back (bash scripts)
+* ML2 - Definition of Agreement score
+* ML2 - High-Level metrics (total count of comments, deleted / gold / controversial, etc...)
+* ML2 - Daily metrics, including daily agreement
+* ML3 - Analyze metrics on macro-communities (sports, politics, ...) -> "A Look at Communities"
+* ML3 - Analyze metrics on smaller communities within politics
+* ML3 - Compute average count of subreddits per user per month to compare with increasing agreement
+* ML3 - 
+* ML3 - Setup Jekyll
+* ML3 - Create custom CSS, plots and commentary for data story
+
+* **Valentin Borgeaud** - 
+
+* **Cédric Viaccoz** - 
+
+## Description of Parquets
+
+During the scope of this project, we generated a big amount of derivative data from the dataset. Because of the sheer size of information, we often had to store this data in parquets. Concretely, it means that if someone wants to re-run the notebook and still get the results that are displayed (in order to verify the results, for instance), one will have to download the needed parquet files.
+
+For practical, synchronization purposes, we decided to host all the parquet files on Dropbox. One can download each of them by using the following [link](https://www.dropbox.com/sh/8b8j0k4g0rtr9g1/AADHYwW_ekdEIjDRFA122PXsa?dl=0). Moreover, below is a list of all parquets used and how they were generated.
+
+* `2016_news_comment.parquet` - 
+* `agreement_per_community.parquet` - This was generated via the `subreddit_nlp_full_0.001` and the list of subreddits (meta-category) in `data/subreddits`
+* `agreement_per_subgroup.parquet` - Same as `agreement_per_community.parquet` but using the subgroup instead of meta-category.
+* `daily_agreement.parquet` - This was generated via the cluster job `jobs/daily_agreement.py` directly on the full dataset
+* `daily_metrics.parquet` - This was generated via the cluster job `jobs/daily_metrics.py` directly on the full dataset
+* `dataset_metrics.parquet` - This was generated via the cluster job `jobs/basic_metrics.py` directly on the full dataset
+* `donald_comments.parquet` - This contains all the comments available on the subreddit The_Donald. Ran directly on the cluster.
+* `monthly_contribs.parquet` - This was generated using the script `jobs/avg_monthly_contributions` directly on the entire dataset on the cluster.
+* `nlp_filtered_for_communities.parquet` - This is a lighter version of `subreddit_nlp_full_0.001` which contains only communities in `data/subreddits/`
+* `nlp_per_community.parquet` - Same as above I believe.
+* `oct_2016_news_comment.parquet` - 
+* `oneW_oneT_lda_result.parquet` - 
+* `sample.parquet` - This was the first parquet generated. It is basically a random subsample (`0.001`) of the whole dataset. It was used for fast iteration of multiple data explorations before running on the full dataset.
+* `score_metrics.parquet` - 
+* `subreddit_agreement.parquet` - 
+* `subreddit_nlp_full_0.001.parquet` - 
+* `subreddits.parquet` - This contains a spark-ready version of the list of subreddits found in the txt files at `data/subreddits`
+* `threeW_twoT_lda_result.parquet` - 
+
 
 ## Questions for TAs
 * How does the cluster schedule job? Sometimes we had to wait 1 hour for a job to be runned after being accepted, while other time this took only 20 seconds.
