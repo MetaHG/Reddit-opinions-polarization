@@ -43,7 +43,11 @@ function plot_monthly_contributions(elem) {
           b: 40,
           l: 40,
           t: 20
-        }
+        },
+        yaxis: {
+            range: [ 2, 6 ],
+            type: "linear"
+        },
     };
 
     Plotly.newPlot(elem, data, layout, {responsive: true, displayModeBar: false});

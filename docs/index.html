@@ -34,6 +34,7 @@
     <script src="assets/js/plot_subreddit_agreement.js"></script>
     <script src="assets/js/plot_monthly_contributions.js"></script>
     <script src="assets/js/plot_category_metric.js"></script>
+    <script src="assets/js/plot_daily_nlp.js"></script>
   </head>
   <body>
     <header class="page-header" role="banner">
@@ -47,8 +48,6 @@
     </header>
 
     <main id="content" class="main-content" role="main">
-
-      <!-- <h3>Source</h3> -->
 
       December 15, 2018 - EPFL, Lausanne
       <br />
@@ -278,7 +277,8 @@
       </p>
 
       <hr />
-      <!-- <h4 style='text-align:center;'>Evolution of Polarization</h4> -->
+      <h4 style='text-align:center;'>The Echo Chamber Effect</h4>
+      <br/>
       <div id="plot-daily-agreement" class="sub-plot-left">
         <script> plot_daily_agreement('plot-daily-agreement') </script>
       </div>
@@ -299,6 +299,19 @@
         Altogether, this supports a potential explanation that people might have formulated: online communities have become more polarized because users increasingly interact with like-minded individuals.
         But how does that correlates with our other metrics?
       </p>
+
+      <hr/>
+      <h4 style='text-align:center;'>Positivity VS Negativity</h4>
+      <br/>
+      <!-- <hr /> -->
+      <!-- <div class="plot-container"> -->
+      <div id="plot-daily-nlp" class="plot" style="height: 18rem;">
+        <script> plot_daily_nlp('plot-daily-nlp') </script>
+      </div>
+      <div class="legend">
+        <!-- On the left, one can see the daily number of comments posted on Reddit over the years (averaged over a period of 60 days). -->
+        <!-- On the right are plotted the 10 biggest subreddits in terms of total comments posted. -->
+      </div>
 
       <!-- Looking at this plot, we notice a continuous increase in the agreement of people with each other. -->
       <!-- This is interesting, because it highlights one of the potential root causes of this phenomenon. -->
