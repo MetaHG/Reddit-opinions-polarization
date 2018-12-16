@@ -118,13 +118,23 @@ One last folder should get a mention even though it is absent from this reposito
 * ML2 - Daily metrics, including daily agreement
 * ML3 - Analyze metrics on macro-communities (sports, politics, ...) -> "A Look at Communities"
 * ML3 - Analyze metrics on smaller communities within politics
+* ML3 - Analyze most extreme subreddits for each metric
 * ML3 - Compute average count of subreddits per user per month to compare with increasing agreement
 * ML3 - Setup Jekyll
 * ML3 - Create custom CSS, plots and commentary for data story
 
-* **Valentin Borgeaud** - 
+**Valentin Borgeaud**
 
-* **Cédric Viaccoz** - 
+
+* ML2 - Read documentation about NLTK sentiment analysis + find datasets of hate speech / bad words
+* ML2 - Setup cluster to accept NLTK via eggs, custom location for additional zip files, etc...
+* ML2 - Create jobs for extracting positivity, negativity, vulgarity metrics measures on the dataset (on a small time window)
+* ML3 - Optimize previous scripts to perform sentiment analysis on a bigger subsample of the dataset with full date range
+* ML3 - Evaluate how NLP metrics evolve over time.
+* ML3 - Plot the distributions of all metrics.
+* ML3 - Analysis of correlations between all metrics, aggregated either by day or by subreddit.
+
+**Cédric Viaccoz**
 
 * ML2 - First local implementation of LDA and test on r/news in november 2016
 * ML3 - Pyspark implementation of LDA
@@ -152,14 +162,12 @@ For practical, synchronization purposes, we decided to host all the parquet file
 * `oct_2016_news_comment.parquet` - Same as `2016_news_comments.parquet` but only the comments october 2016 which were preprocessed into thread for LDA purpose.
 * `oneW_oneT_lda_result.parquet` - Result from milestone 2 LDA on one month of news comment. Topics were generated at the post level, with one topic per post and one word per topic.
 * `sample.parquet` - This was the first parquet generated. It is basically a random subsample (`0.001`) of the whole dataset. It was used for fast iteration of multiple data explorations before running on the full dataset.
-* `score_metrics.parquet` - 
-* `subreddit_agreement.parquet` - 
-* `subreddit_nlp_full_0.001.parquet` - 
+* `score_metrics.parquet`
+* `subreddit_agreement.parquet` - Filtering in agreement score per subreddits in `subreddits.parquet`
+* `subreddit_nlp_full_0.001.parquet` - All NLP metrics calculated directly on the cluster using 0.001 subsample
 * `subreddits.parquet` - This contains a spark-ready version of the list of subreddits found in the txt files at `data/subreddits`
 * `threeW_twoT_lda_result.parquet` - Same as `oneW_oneT_lda_result.parquet` except with two topics per post, and 3 words per topic.
 * `trump_lda_result.parquet` - same as `hillary_lda_result.parquet` but with The_Donald comments.
 * `trump_lda_prepro.parquet` - same as `hillary_lda_prepro.parquet` but with The_Donald comments.
-
-
 
 [1]: Davidson et al.(2017), Automated Hate Speech Detection and the Problem of Offensive Language._Proceedings of the 11th International AAAI Conference on Web and Social Media_. 
