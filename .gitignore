@@ -117,3 +117,7 @@ lexicons
 *.rtf
 *_SUCCESS
 *.json
+
+# Plots
+plots/images/*
+plots/*.html
